@@ -3,7 +3,7 @@
  * 编排同步流程：上传、下载、冲突检测、权限请求
  */
 
-import { WebDAVConfig, testWebDAVConnection, uploadSyncData, downloadSyncData, uploadAsset, downloadAsset } from './webdavClient';
+import { WebDAVConfig, testWebDAVConnection, uploadSyncData, downloadSyncData, uploadAsset, downloadAsset, listAssetKeys, deleteAsset } from './webdavClient';
 import { packageLocalData, collectAssetBlobs, restoreAssetBlobs, restoreFromSyncData, isRemoteNewer, getLastSyncTime, SyncOptions, hasLocalChanges, saveUploadFingerprint } from './syncData';
 
 export interface SyncResult {
@@ -201,6 +201,22 @@ export async function uploadToCloud(): Promise<SyncResult> {
             console.warn('Sync upload: some assets failed', { assetOk, assetFail });
         } else if (assetOk > 0) {
             assetInfo = `. ${assetOk} assets synced`;
+        }
+
+        // 清理云端孤儿文件（不在当前资产清单中的旧文件）
+        const allKeys = [
+            ...syncData.assets.wallpapers.map(id => `wallpaper_${id}`),
+            ...syncData.assets.stickers.map(id => `sticker_${id}`),
+        ];
+        if (allKeys.length > 0) {
+            try {
+                const cloudFiles = await listAssetKeys(config);
+                for (const file of cloudFiles) {
+                    if (!allKeys.includes(file)) {
+                        await deleteAsset(config, file);
+                    }
+                }
+            } catch { /* cleanup is non-critical */ }
         }
     }
 

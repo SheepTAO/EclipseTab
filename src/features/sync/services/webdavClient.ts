@@ -113,3 +113,36 @@ export async function downloadAsset(config: WebDAVConfig, assetKey: string): Pro
         return null;
     } catch { return null; }
 }
+
+/** 列出云端所有资产文件名 */
+export async function listAssetKeys(config: WebDAVConfig): Promise<string[]> {
+    try {
+        const dirPath = `${SYNC_DIR}/${ASSETS_PREFIX.replace(/\/$/, '')}`;
+        const response = await request(config, dirPath, {
+            method: 'PROPFIND',
+            headers: { 'Depth': '1' },
+        });
+        if (response.status !== 207 && response.status !== 200) return [];
+
+        const text = await response.text();
+        const parser = new DOMParser();
+        const xml = parser.parseFromString(text, 'application/xml');
+        const hrefs = xml.querySelectorAll('D\\:href, href');
+        const files: string[] = [];
+        hrefs.forEach(el => {
+            const href = el.textContent || '';
+            const name = href.split('/').pop() || '';
+            if (name && !name.endsWith('/')) files.push(name);
+        });
+        return files;
+    } catch { return []; }
+}
+
+/** 删除云端资产文件 */
+export async function deleteAsset(config: WebDAVConfig, assetKey: string): Promise<boolean> {
+    try {
+        const path = `${SYNC_DIR}/${ASSETS_PREFIX}${assetKey}`;
+        const response = await request(config, path, { method: 'DELETE' });
+        return response.ok || response.status === 204 || response.status === 404;
+    } catch { return false; }
+}
