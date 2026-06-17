@@ -24,6 +24,11 @@ interface Translations {
         openInNewTab: string;
         openInCurrentTab: string;
         fixIcons: string;
+        exportBackup: string;
+        importBackup: string;
+        importBackupConfirm: string;
+        backupFailed: string;
+        restoreFailed: string;
     };
     search: {
         searchBy: string;
@@ -143,6 +148,11 @@ const translations: Record<Language, Translations> = {
             openInNewTab: 'New',
             openInCurrentTab: 'Current',
             fixIcons: 'Fix Broken/Missing Icons',
+            exportBackup: 'Export Backup',
+            importBackup: 'Import Backup',
+            importBackupConfirm: 'Importing will overwrite current spaces, links, stickers, wallpaper, and settings. Continue?',
+            backupFailed: 'Backup failed',
+            restoreFailed: 'Restore failed',
         },
         search: {
             searchBy: 'Search by',
@@ -260,6 +270,11 @@ const translations: Record<Language, Translations> = {
             openInNewTab: '开启',
             openInCurrentTab: '关闭',
             fixIcons: '修复破损与失效图标',
+            exportBackup: '导出备份',
+            importBackup: '导入备份',
+            importBackupConfirm: '导入会覆盖当前空间、链接、贴纸、壁纸和设置。确定继续吗？',
+            backupFailed: '备份失败',
+            restoreFailed: '恢复失败',
         },
         search: {
             searchBy: '使用',

@@ -38,6 +38,7 @@ interface DBWrapper {
     getStickerImage: (id: string) => Promise<StickerImageItem | null>;
     removeStickerImage: (id: string) => Promise<void>;
     removeStickerImages: (ids: string[]) => Promise<void>;
+    clearAllStickerImages: () => Promise<void>;
     // Favicon 操作
     saveFavicon: (item: FaviconItem) => Promise<string>;
     getFavicon: (domain: string) => Promise<FaviconItem | null>;
@@ -291,6 +292,22 @@ class IndexedDBWrapper implements DBWrapper {
         } catch (error) {
             console.error('DB RemoveStickerImages Error:', error);
             throw error;
+        }
+    }
+
+    async clearAllStickerImages(): Promise<void> {
+        try {
+            const db = await this.getDB();
+            return new Promise((resolve, reject) => {
+                const transaction = db.transaction(STICKER_IMAGES_STORE, 'readwrite');
+                const store = transaction.objectStore(STICKER_IMAGES_STORE);
+                const request = store.clear();
+
+                request.onsuccess = () => resolve();
+                request.onerror = () => reject(request.error);
+            });
+        } catch (error) {
+            console.error('DB ClearAllStickerImages Error:', error);
         }
     }
     // ========================================================================

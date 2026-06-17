@@ -390,6 +390,13 @@
     color: var(--color-text-primary);
 }
 
+.backupButtons {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 8px;
+    width: 100%;
+}
+
 /* ===== 底部区域 / Footer ===== */
 .footer {
     display: flex;
