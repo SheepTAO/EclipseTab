@@ -34,6 +34,7 @@ interface ContextMenuProps {
     onExportImage?: () => void;
     onExportImageSticker?: () => void;
     onOpenSettings?: () => void;
+    onClearAllStickers?: () => void;
     isPinned?: boolean;
     onTogglePin?: () => void;
 }
@@ -55,6 +56,7 @@ export const ContextMenu: React.FC<ContextMenuProps> = ({
     onExportImage,
     onExportImageSticker,
     onOpenSettings,
+    onClearAllStickers,
     isPinned,
     onTogglePin,
 }) => {
@@ -107,7 +109,7 @@ export const ContextMenu: React.FC<ContextMenuProps> = ({
 
     // Adjust position to stay within viewport
     const menuWidth = 180;
-    const menuHeight = type === 'background' ? 180 : 200; // Approximate menu heights
+    const menuHeight = type === 'background' ? 230 : 200; // Approximate menu heights
     const padding = 10;
 
     // Calculate adjusted position, ensuring menu stays within viewport on all edges
@@ -132,75 +134,93 @@ export const ContextMenu: React.FC<ContextMenuProps> = ({
     }
 
     return createPortal(
-        <div
-            ref={menuRef}
-            className={styles.contextMenu}
-            style={{ left: adjustedX, top: adjustedY }}
-            onClick={(e) => e.stopPropagation()}
-        >
-            <div className={styles.menuLabel}>EclipseTab</div>
-            <div className={styles.menuDivider} />
-            <div className={styles.menuOptions}>
-                {type === 'background' ? (
-                    <>
-                        <button className={styles.menuItem} onClick={() => { onAddSticker(); onClose(); }}>
-                            <span className={styles.menuIcon} style={{ WebkitMaskImage: `url(${plusIcon})`, maskImage: `url(${plusIcon})` }} />
-                            <span>{t.contextMenu.addSticker}</span>
-                        </button>
-                        <button className={styles.menuItem} onClick={() => { onUploadImage(); onClose(); }}>
-                            <span className={styles.menuIcon} style={{ WebkitMaskImage: `url(${uploadIcon})`, maskImage: `url(${uploadIcon})` }} />
-                            <span>{t.contextMenu.uploadImage}</span>
-                        </button>
-                        <button className={styles.menuItem} onClick={() => { onToggleEditMode(); onClose(); }}>
-                            <span className={styles.menuIcon} style={{ WebkitMaskImage: `url(${editIcon})`, maskImage: `url(${editIcon})` }} />
-                            <span>{isEditMode ? t.contextMenu.exitEditMode : t.contextMenu.editMode}</span>
-                        </button>
-                        <button className={styles.menuItem} onClick={() => { onOpenSettings?.(); onClose(); }}>
-                            <span className={styles.menuIcon} style={{ WebkitMaskImage: `url(${settingsIcon})`, maskImage: `url(${settingsIcon})` }} />
-                            <span>{t.contextMenu.settings}</span>
-                        </button>
-                    </>
-                ) : (
-                    <>
-                        {isImageSticker ? (
-                            <>
-                                <button className={styles.menuItem} onClick={() => { onCopyImage?.(); onClose(); }}>
-                                    <span className={styles.menuIcon} style={{ WebkitMaskImage: `url(${copyIcon})`, maskImage: `url(${copyIcon})` }} />
-                                    <span>{t.contextMenu.copyImage}</span>
-                                </button>
-                                <button className={styles.menuItem} onClick={() => { onExportImageSticker?.(); onClose(); }}>
-                                    <span className={styles.menuIcon} style={{ WebkitMaskImage: `url(${uploadIcon})`, maskImage: `url(${uploadIcon})` }} />
-                                    <span>{t.contextMenu.exportImage}</span>
-                                </button>
-                            </>
-                        ) : (
-                            <>
-                                <button className={styles.menuItem} onClick={() => { onCopyText?.(); onClose(); }}>
-                                    <span className={styles.menuIcon} style={{ WebkitMaskImage: `url(${copyIcon})`, maskImage: `url(${copyIcon})` }} />
-                                    <span>{t.contextMenu.copyText}</span>
-                                </button>
-                                <button className={styles.menuItem} onClick={() => { onEditSticker?.(); onClose(); }}>
-                                    <span className={styles.menuIcon} style={{ WebkitMaskImage: `url(${writeIcon})`, maskImage: `url(${writeIcon})` }} />
-                                    <span>{t.contextMenu.editSticker}</span>
-                                </button>
-                                <button className={styles.menuItem} onClick={() => { onExportImage?.(); onClose(); }}>
-                                    <span className={styles.menuIcon} style={{ WebkitMaskImage: `url(${uploadIcon})`, maskImage: `url(${uploadIcon})` }} />
-                                    <span>{t.contextMenu.exportAsImage}</span>
-                                </button>
-                            </>
-                        )}
-                        <button className={styles.menuItem} onClick={() => { onTogglePin?.(); onClose(); }}>
-                            <span className={styles.menuIcon} style={{ WebkitMaskImage: `url(${pinIcon})`, maskImage: `url(${pinIcon})` }} />
-                            <span>{isPinned ? t.contextMenu.unpinSticker : t.contextMenu.pinSticker}</span>
-                        </button>
-                        <button className={`${styles.menuItem} ${styles.danger}`} onClick={() => { onDeleteSticker?.(); onClose(); }}>
-                            <span className={styles.menuIcon} style={{ WebkitMaskImage: `url(${trashIcon})`, maskImage: `url(${trashIcon})` }} />
-                            <span>{t.contextMenu.deleteSticker}</span>
-                        </button>
-                    </>
-                )}
+        <>
+            <div
+                className={styles.contextMenuClickAway}
+                onMouseDown={(e) => {
+                    e.preventDefault();
+                    handleClose();
+                }}
+                onContextMenu={(e) => {
+                    e.preventDefault();
+                    handleClose();
+                }}
+            />
+            <div
+                ref={menuRef}
+                className={styles.contextMenu}
+                style={{ left: adjustedX, top: adjustedY }}
+                onMouseDown={(e) => e.stopPropagation()}
+                onClick={(e) => e.stopPropagation()}
+            >
+                <div className={styles.menuLabel}>EclipseTab</div>
+                <div className={styles.menuDivider} />
+                <div className={styles.menuOptions}>
+                    {type === 'background' ? (
+                        <>
+                            <button className={styles.menuItem} onClick={() => { onAddSticker(); onClose(); }}>
+                                <span className={styles.menuIcon} style={{ WebkitMaskImage: `url(${plusIcon})`, maskImage: `url(${plusIcon})` }} />
+                                <span>{t.contextMenu.addSticker}</span>
+                            </button>
+                            <button className={styles.menuItem} onClick={() => { onUploadImage(); onClose(); }}>
+                                <span className={styles.menuIcon} style={{ WebkitMaskImage: `url(${uploadIcon})`, maskImage: `url(${uploadIcon})` }} />
+                                <span>{t.contextMenu.uploadImage}</span>
+                            </button>
+                            <button className={styles.menuItem} onClick={() => { onToggleEditMode(); onClose(); }}>
+                                <span className={styles.menuIcon} style={{ WebkitMaskImage: `url(${editIcon})`, maskImage: `url(${editIcon})` }} />
+                                <span>{isEditMode ? t.contextMenu.exitEditMode : t.contextMenu.editMode}</span>
+                            </button>
+                            <button className={styles.menuItem} onClick={() => { onOpenSettings?.(); onClose(); }}>
+                                <span className={styles.menuIcon} style={{ WebkitMaskImage: `url(${settingsIcon})`, maskImage: `url(${settingsIcon})` }} />
+                                <span>{t.contextMenu.settings}</span>
+                            </button>
+                            <button className={`${styles.menuItem} ${styles.danger}`} onClick={() => { onClose(); onClearAllStickers?.(); }}>
+                                <span className={styles.menuIcon} style={{ WebkitMaskImage: `url(${trashIcon})`, maskImage: `url(${trashIcon})` }} />
+                                <span>{t.contextMenu.clearAllStickers}</span>
+                            </button>
+                        </>
+                    ) : (
+                        <>
+                            {isImageSticker ? (
+                                <>
+                                    <button className={styles.menuItem} onClick={() => { onCopyImage?.(); onClose(); }}>
+                                        <span className={styles.menuIcon} style={{ WebkitMaskImage: `url(${copyIcon})`, maskImage: `url(${copyIcon})` }} />
+                                        <span>{t.contextMenu.copyImage}</span>
+                                    </button>
+                                    <button className={styles.menuItem} onClick={() => { onExportImageSticker?.(); onClose(); }}>
+                                        <span className={styles.menuIcon} style={{ WebkitMaskImage: `url(${uploadIcon})`, maskImage: `url(${uploadIcon})` }} />
+                                        <span>{t.contextMenu.exportImage}</span>
+                                    </button>
+                                </>
+                            ) : (
+                                <>
+                                    <button className={styles.menuItem} onClick={() => { onCopyText?.(); onClose(); }}>
+                                        <span className={styles.menuIcon} style={{ WebkitMaskImage: `url(${copyIcon})`, maskImage: `url(${copyIcon})` }} />
+                                        <span>{t.contextMenu.copyText}</span>
+                                    </button>
+                                    <button className={styles.menuItem} onClick={() => { onEditSticker?.(); onClose(); }}>
+                                        <span className={styles.menuIcon} style={{ WebkitMaskImage: `url(${writeIcon})`, maskImage: `url(${writeIcon})` }} />
+                                        <span>{t.contextMenu.editSticker}</span>
+                                    </button>
+                                    <button className={styles.menuItem} onClick={() => { onExportImage?.(); onClose(); }}>
+                                        <span className={styles.menuIcon} style={{ WebkitMaskImage: `url(${uploadIcon})`, maskImage: `url(${uploadIcon})` }} />
+                                        <span>{t.contextMenu.exportAsImage}</span>
+                                    </button>
+                                </>
+                            )}
+                            <button className={styles.menuItem} onClick={() => { onTogglePin?.(); onClose(); }}>
+                                <span className={styles.menuIcon} style={{ WebkitMaskImage: `url(${pinIcon})`, maskImage: `url(${pinIcon})` }} />
+                                <span>{isPinned ? t.contextMenu.unpinSticker : t.contextMenu.pinSticker}</span>
+                            </button>
+                            <button className={`${styles.menuItem} ${styles.danger}`} onClick={() => { onDeleteSticker?.(); onClose(); }}>
+                                <span className={styles.menuIcon} style={{ WebkitMaskImage: `url(${trashIcon})`, maskImage: `url(${trashIcon})` }} />
+                                <span>{t.contextMenu.deleteSticker}</span>
+                            </button>
+                        </>
+                    )}
+                </div>
             </div>
-        </div>,
+        </>,
         document.body
     );
 };

@@ -56,6 +56,11 @@
     filter: drop-shadow(0 12px 24px rgba(0, 0, 0, 0.2));
 }
 
+/* Shift 多选中的文字贴纸使用按下态投影 */
+.stickerText.batchSelected {
+    filter: drop-shadow(0 12px 24px rgba(0, 0, 0, 0.2));
+}
+
 /* 创作模式下悬停效果 - 文字贴纸外层 */
 .stickerText.creativeHover:hover {
     filter: drop-shadow(0 6px 12px rgba(0, 0, 0, 0.12));
@@ -164,6 +169,88 @@
         -webkit-text-stroke: 0.3px currentColor;
         line-height: 0.95;
     }
+}
+
+.textSticker .stickerLink {
+    color: inherit;
+    text-decoration: underline;
+    text-decoration-thickness: 2px;
+    text-underline-offset: 4px;
+    cursor: pointer;
+    transition: opacity var(--transition-fast), text-decoration-thickness var(--transition-fast);
+}
+
+.textSticker .stickerLink:hover {
+    opacity: 0.7;
+    text-decoration-thickness: 3px;
+}
+
+.linkCardSticker {
+    width: 292px;
+    height: 170px;
+    overflow: hidden;
+    border-radius: 14px;
+    background: #FFFFFF;
+    border: 1px solid color-mix(in srgb, var(--color-border) 76%, transparent);
+    cursor: grab;
+    user-select: none;
+    -webkit-user-select: none;
+}
+
+.linkCardSticker.noImage {
+    height: auto;
+}
+
+.linkCardSticker:active {
+    cursor: grabbing;
+}
+
+.linkCardImage {
+    width: 100%;
+    height: 92px;
+    display: block;
+    object-fit: cover;
+    background: #FFFFFF;
+}
+
+.linkCardContent {
+    height: 78px;
+    padding: 9px 11px;
+    box-sizing: border-box;
+    display: flex;
+    flex-direction: column;
+    gap: 7px;
+}
+
+.linkCardSticker.noImage .linkCardContent {
+    height: auto;
+    padding: 10px 11px;
+}
+
+.linkCardTitle,
+.linkCardSubtitle {
+    font-family: var(--font-family);
+    letter-spacing: 0;
+    overflow: hidden;
+    display: -webkit-box;
+    -webkit-box-orient: vertical;
+    text-rendering: auto;
+}
+
+.linkCardTitle {
+    color: var(--color-text-primary);
+    font-size: 15px;
+    font-weight: 700;
+    line-height: 1.28;
+    -webkit-line-clamp: 2;
+}
+
+.linkCardSubtitle {
+    color: var(--color-text-secondary);
+    font-size: 11px;
+    font-weight: 500;
+    line-height: 1.35;
+    -webkit-line-clamp: 1;
 }
 
 /* ===== 图片贴纸 ===== */
@@ -527,6 +614,14 @@
     gap: 0;
     pointer-events: auto;
     box-shadow: var(--shadow-combined);
+}
+
+.contextMenuClickAway {
+    position: fixed;
+    inset: 0;
+    z-index: 2999;
+    background: transparent;
+    pointer-events: auto;
 }
 
 /* 菜单标签 */
@@ -1543,4 +1638,33 @@
 .toolbarCheckboxBtn .toolbarIcon {
     width: 26px;
     height: 26px;
+}
+
+.toolbarLinkCardBtn {
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    border: none;
+    background: var(--color-bg-secondary);
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--color-text-primary);
+    transition: background var(--transition-fast), color var(--transition-fast), opacity var(--transition-fast);
+}
+
+.toolbarLinkCardBtn:hover {
+    background: var(--color-bg-tertiary);
+    color: var(--blue-500);
+}
+
+.toolbarLinkCardBtn.active {
+    background: var(--blue-500);
+    color: white;
+}
+
+.toolbarLinkCardBtn:disabled {
+    cursor: progress;
+    opacity: 0.55;
 }

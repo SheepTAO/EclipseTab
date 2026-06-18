@@ -6,7 +6,11 @@ import { useLanguage } from '@/shared/context/LanguageContext';
 import plusIcon from '@/assets/icons/plus.svg';
 import minusIcon from '@/assets/icons/minus.svg';
 import checkCircleIcon from '@/assets/icons/check-circle.svg';
+import linkIcon from '@/assets/icons/link.svg';
 import { TEXT_COLORS } from './FloatingToolbar';
+import { LinkCardMetadata } from '@/shared/types';
+import { fetchLinkPreview } from '@/shared/utils/linkPreview';
+import { getSinglePlainUrl, markdownToEditableText, markdownToPlainText, rebuildMarkdownFromEditText } from '@/shared/utils/markdownLinks';
 import styles from './ZenShelf.module.css';
 
 // localStorage 键：记忆用户上次使用的字体大小
@@ -54,7 +58,8 @@ interface TextInputProps {
     initialText?: string;
     initialStyle?: { color: string; textAlign: 'left' | 'center' | 'right'; fontSize?: number };
     initialHasCheckbox?: boolean;
-    onSubmit: (content: string, style?: { color: string; textAlign: 'left' | 'center' | 'right'; fontSize: number }, hasCheckbox?: boolean) => void;
+    initialLinkCard?: LinkCardMetadata;
+    onSubmit: (content: string, style?: { color: string; textAlign: 'left' | 'center' | 'right'; fontSize: number }, hasCheckbox?: boolean, linkCard?: LinkCardMetadata) => void;
     onCancel: () => void;
     viewportScale: number;
 }
@@ -64,14 +69,14 @@ export interface TextInputHandle {
     saveNow: () => void;
 }
 
-export const TextInput = forwardRef<TextInputHandle, TextInputProps>(({ x, y, initialText = '', initialStyle, initialHasCheckbox = false, onSubmit, onCancel, viewportScale }, ref) => {
+export const TextInput = forwardRef<TextInputHandle, TextInputProps>(({ x, y, initialText = '', initialStyle, initialHasCheckbox = false, initialLinkCard, onSubmit, onCancel, viewportScale }, ref) => {
     const { t } = useLanguage();
     const { theme } = useThemeData();
     const inputRef = useRef<HTMLDivElement>(null);
     const inputWrapperRef = useRef<HTMLDivElement>(null);
     const toolbarRef = useRef<HTMLDivElement>(null);
     const containerRef = useRef<HTMLDivElement>(null);
-    const [value, setValue] = useState(initialText);
+    const originalMarkdownRef = useRef(initialText);
     // 始终使用左对齐
     const textAlign = 'left' as const;
     const [textColor, setTextColor] = useState(initialStyle?.color || TEXT_COLORS[0]);
@@ -80,6 +85,12 @@ export const TextInput = forwardRef<TextInputHandle, TextInputProps>(({ x, y, in
     );
     const [hasCheckbox, setHasCheckbox] = useState<boolean>(initialHasCheckbox);
     const [isExiting, setIsExiting] = useState(false);
+    const [editText, setEditText] = useState(() => markdownToEditableText(initialText));
+    const [linkCard, setLinkCard] = useState<LinkCardMetadata | undefined>(initialLinkCard);
+    const [isFetchingLinkCard, setIsFetchingLinkCard] = useState(false);
+    const trimmedEditText = editText.trim();
+    const hasContent = !!markdownToPlainText(editText).trim();
+    const detectedUrl = getSinglePlainUrl(trimmedEditText);
 
     // 用 ref 保存最新的编辑状态，避免闭包捕获过时值
     const latestStateRef = useRef({ textColor, fontSize, hasCheckbox });
@@ -88,25 +99,39 @@ export const TextInput = forwardRef<TextInputHandle, TextInputProps>(({ x, y, in
     // 标记是否已经提交过（避免重复提交）
     const hasSubmittedRef = useRef(false);
 
+    const getSubmittedContent = useCallback((editText: string) => {
+        return rebuildMarkdownFromEditText(editText, originalMarkdownRef.current);
+    }, []);
+
+    const getCurrentEditText = useCallback(() => {
+        return (inputRef.current?.innerText || editText).trim();
+    }, [editText]);
+
     // 暴露 saveNow 方法，供父组件在切换编辑时调用
     useImperativeHandle(ref, () => ({
         saveNow: () => {
             if (hasSubmittedRef.current) return;
             hasSubmittedRef.current = true;
-            const text = inputRef.current?.innerText?.trim() || '';
+            const text = getCurrentEditText();
             if (text) {
                 const { textColor: c, fontSize: f, hasCheckbox: cb } = latestStateRef.current;
-                onSubmit(text, { color: c, textAlign: 'left', fontSize: f }, cb);
+                onSubmit(getSubmittedContent(text), { color: c, textAlign: 'left', fontSize: f }, cb, linkCard);
             } else {
                 onCancel();
             }
         }
-    }));
+    }), [getCurrentEditText, getSubmittedContent, linkCard, onCancel, onSubmit]);
 
     // 持久化字体大小到 localStorage
     useEffect(() => {
         localStorage.setItem(LAST_FONT_SIZE_KEY, fontSize.toString());
     }, [fontSize]);
+
+    useEffect(() => {
+        originalMarkdownRef.current = initialText;
+        setEditText(markdownToEditableText(initialText));
+        setLinkCard(initialLinkCard);
+    }, [initialLinkCard, initialText]);
 
     // 挂载时聚焦并仅对工具栏播放入场动画
     useEffect(() => {
@@ -122,9 +147,9 @@ export const TextInput = forwardRef<TextInputHandle, TextInputProps>(({ x, y, in
         }
         if (inputRef.current) {
             inputRef.current.focus();
-            // 如果是编辑，设置初始文本
+            // 如果是编辑，设置初始文本（可往返的链接编辑格式）
             if (initialText) {
-                inputRef.current.innerText = initialText;
+                inputRef.current.innerText = markdownToEditableText(initialText);
                 // 将光标移动到末尾
                 const range = document.createRange();
                 range.selectNodeContents(inputRef.current);
@@ -159,6 +184,11 @@ export const TextInput = forwardRef<TextInputHandle, TextInputProps>(({ x, y, in
         }
     }, [isExiting]);
 
+    const handleSubmitContent = useCallback((editText: string) => {
+        const contentWithLinks = getSubmittedContent(editText);
+        triggerExit(() => onSubmit(contentWithLinks, { color: textColor, textAlign, fontSize }, hasCheckbox, linkCard), false);
+    }, [fontSize, getSubmittedContent, hasCheckbox, linkCard, onSubmit, textColor, textAlign, triggerExit]);
+
     // 点击外部关闭 - 立即保存，不等出场动画
     useEffect(() => {
         const handleClickOutside = (e: MouseEvent) => {
@@ -172,13 +202,13 @@ export const TextInput = forwardRef<TextInputHandle, TextInputProps>(({ x, y, in
             const { textColor: currentColor, fontSize: currentSize, hasCheckbox: currentCheckbox } = latestStateRef.current;
             // 立即提交/取消，不等动画完成
             setIsExiting(true);
-            const text = inputRef.current?.innerText?.trim() || '';
+            const text = getCurrentEditText();
             if (text) {
                 hasSubmittedRef.current = true;
                 if (toolbarRef.current) {
                     scaleFadeOut(toolbarRef.current, 150);
                 }
-                onSubmit(text, { color: currentColor, textAlign, fontSize: currentSize }, currentCheckbox);
+                onSubmit(getSubmittedContent(text), { color: currentColor, textAlign, fontSize: currentSize }, currentCheckbox, linkCard);
             } else {
                 hasSubmittedRef.current = true;
                 if (inputWrapperRef.current) {
@@ -197,7 +227,7 @@ export const TextInput = forwardRef<TextInputHandle, TextInputProps>(({ x, y, in
             clearTimeout(timer);
             document.removeEventListener('mousedown', handleClickOutside);
         };
-    }, [onSubmit, onCancel, isExiting]);
+    }, [getCurrentEditText, getSubmittedContent, linkCard, onSubmit, onCancel, isExiting]);
 
     // 字体大小调整常量
     const FONT_SIZE_STEP = 2; // 每次调整的步长（px）
@@ -245,9 +275,15 @@ export const TextInput = forwardRef<TextInputHandle, TextInputProps>(({ x, y, in
         // Shift+Enter 允许换行（默认行为）
     };
 
-    const handleInput = () => {
+    const syncInputState = () => {
         if (inputRef.current) {
-            setValue(inputRef.current.innerText);
+            const text = inputRef.current.innerText.trim();
+            const nextDetectedUrl = getSinglePlainUrl(text);
+
+            setEditText(text);
+            if (linkCard && linkCard.url !== nextDetectedUrl) {
+                setLinkCard(undefined);
+            }
         }
     };
 
@@ -256,14 +292,14 @@ export const TextInput = forwardRef<TextInputHandle, TextInputProps>(({ x, y, in
         e.preventDefault();
         const text = e.clipboardData.getData('text/plain');
         document.execCommand('insertText', false, text);
-        handleInput();
+        window.setTimeout(syncInputState, 0);
     };
 
     const handleSubmit = () => {
-        const trimmed = inputRef.current?.innerText?.trim() || '';
+        const trimmed = getCurrentEditText();
         if (trimmed) {
             hasSubmittedRef.current = true;
-            triggerExit(() => onSubmit(trimmed, { color: textColor, textAlign, fontSize }, hasCheckbox), false);
+            handleSubmitContent(trimmed);
         } else {
             handleCancel();
         }
@@ -294,6 +330,31 @@ export const TextInput = forwardRef<TextInputHandle, TextInputProps>(({ x, y, in
         }
         setFontSize(num);
         setLocalFontSize(num.toString());
+    };
+
+    const handleCreateLinkCard = async () => {
+        if (linkCard) {
+            setLinkCard(undefined);
+            window.setTimeout(() => {
+                if (inputRef.current) {
+                    inputRef.current.innerText = editText;
+                    inputRef.current.focus();
+                }
+            }, 0);
+            return;
+        }
+
+        const url = detectedUrl || getSinglePlainUrl(inputRef.current?.innerText || '');
+        if (!url || isFetchingLinkCard) return;
+
+        setIsFetchingLinkCard(true);
+        try {
+            const preview = await fetchLinkPreview(url);
+            setLinkCard(preview);
+        } finally {
+            setIsFetchingLinkCard(false);
+            inputRef.current?.focus();
+        }
     };
 
     // State for visual position, initially matching props
@@ -343,29 +404,47 @@ export const TextInput = forwardRef<TextInputHandle, TextInputProps>(({ x, y, in
         >
             {/* 实时预览贴纸 - 直接在背景上显示 */}
             <div ref={inputWrapperRef} className={hasCheckbox ? styles.textStickerContainer : ''}>
-                {hasCheckbox && (
+                {hasCheckbox && !linkCard && (
                     <button
                         className={styles.textStickerCheckbox}
                         style={{ cursor: 'default', pointerEvents: 'none' }}
                         disabled
                     />
                 )}
-                <div
-                    ref={inputRef}
-                    className={styles.stickerPreviewInput}
-                    contentEditable
-                    suppressContentEditableWarning
-                    style={{
-                        color: getThemeAwareColor(textColor, theme),
-                        textAlign: textAlign,
-                        fontSize: `${fontSize}px`,
-                    }}
-                    onInput={handleInput}
-                    onKeyDown={handleKeyDown}
-                    onPaste={handlePaste}
-                    onClick={(e) => e.stopPropagation()}
-                    data-placeholder={t.textInput.placeholder}
-                />
+                {linkCard ? (
+                    <article className={`${styles.linkCardSticker} ${!linkCard.imageUrl ? styles.noImage : ''}`}>
+                        {linkCard.imageUrl && (
+                            <img
+                                src={linkCard.imageUrl}
+                                alt=""
+                                className={styles.linkCardImage}
+                                draggable={false}
+                            />
+                        )}
+                        <div className={styles.linkCardContent}>
+                            <div className={styles.linkCardTitle}>{linkCard.title}</div>
+                            <div className={styles.linkCardSubtitle}>{linkCard.subtitle}</div>
+                        </div>
+                    </article>
+                ) : (
+                    <div
+                        ref={inputRef}
+                        className={styles.stickerPreviewInput}
+                        contentEditable
+                        suppressContentEditableWarning
+                        style={{
+                            color: getThemeAwareColor(textColor, theme),
+                            textAlign: textAlign,
+                            fontSize: `${fontSize}px`,
+                        }}
+                        onInput={syncInputState}
+                        onKeyUp={syncInputState}
+                        onKeyDown={handleKeyDown}
+                        onPaste={handlePaste}
+                        onClick={(e) => e.stopPropagation()}
+                        data-placeholder={t.textInput.placeholder}
+                    />
+                )}
             </div>
 
             {/* 工具栏 - 跟随在输入区域下方 */}
@@ -440,6 +519,21 @@ export const TextInput = forwardRef<TextInputHandle, TextInputProps>(({ x, y, in
 
                 <div className={styles.toolbarDivider} />
 
+                {detectedUrl && (
+                    <>
+                        <button
+                            className={`${styles.toolbarLinkCardBtn} ${linkCard ? styles.active : ''}`}
+                            onClick={handleCreateLinkCard}
+                            disabled={isFetchingLinkCard}
+                            title={linkCard ? 'Back to text' : 'Create link card'}
+                        >
+                            <span className={styles.toolbarIcon} style={{ WebkitMaskImage: `url(${linkIcon})`, maskImage: `url(${linkIcon})` }} />
+                        </button>
+
+                        <div className={styles.toolbarDivider} />
+                    </>
+                )}
+
                 {/* 复选框切换按钮 */}
                 <button
                     className={`${styles.toolbarCheckboxBtn} ${hasCheckbox ? styles.active : ''}`}
@@ -458,7 +552,7 @@ export const TextInput = forwardRef<TextInputHandle, TextInputProps>(({ x, y, in
                 <button
                     className={styles.toolbarConfirmBtn}
                     onClick={handleSubmit}
-                    disabled={!value.trim()}
+                    disabled={!hasContent}
                 >
                     {t.textInput.confirm}
                 </button>
@@ -467,4 +561,3 @@ export const TextInput = forwardRef<TextInputHandle, TextInputProps>(({ x, y, in
         document.body
     );
 });
-

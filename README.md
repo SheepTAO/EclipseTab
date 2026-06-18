@@ -25,80 +25,29 @@ Eclipse Tab 是一款功能强大的浏览器新标签页扩展，以 **Zen Shel
 
 <br>
 
-## 📖 目录
+## 📦 安装
 
-- [✨ 产品简介](#-产品简介)
-- [📦 安装使用](#-安装使用)
-- [🎯 核心功能](#-核心功能)
-- [💡 使用技巧](#-使用技巧)
-- [❓ 常见问题](#-常见问题)
-
-<br>
-
-## ✨ 产品简介
-
-Eclipse Tab 将你的浏览器新标签页变成一个强大的工作台：
-
-- ✏️ **Zen Shelf（灵感白板）** - 随时随地记录灵感，支持文字和图片贴纸
-- 🌐 **Focus Spaces（多重空间）** - 为不同场景创建独立工作空间
-- 🎨 **精美主题** - 多种主题模式，自定义壁纸
-
-<br>
-
-## 📦 安装使用
-
-### 🎯 从扩展商店安装（推荐）
-
-| 浏览器 | 安装链接 |
+| 浏览器 | 链接 |
 |:---|:---|
-| <img src="https://raw.githubusercontent.com/alrra/browser-logos/main/src/chrome/chrome_48x48.png" width="24" /> **Chrome** | [Chrome 扩展商店](https://chromewebstore.google.com/detail/eclipse-tab/lcnmbgidemidmfffplkpflpdpmfdgabp?utm_source=ext_app_menu) |
-| <img src="https://raw.githubusercontent.com/alrra/browser-logos/main/src/edge/edge_48x48.png" width="24" /> **Edge** | [Edge 扩展商店](https://microsoftedge.microsoft.com/addons/detail/eclipse-tab/omlbmhdkajhbcdhjdgjalelbbmjoekfj?hl=zh-cn) |
-| <img src="https://raw.githubusercontent.com/alrra/browser-logos/main/src/firefox/firefox_48x48.png" width="24" /> **Firefox** | [Firefox 扩展商店](https://addons.mozilla.org/zh-CN/firefox/addon/eclipse-tab/) |
-
-### 🛠️ 手动安装
+| <img src="https://raw.githubusercontent.com/alrra/browser-logos/main/src/chrome/chrome_48x48.png" width="20" /> **Chrome** | [Chrome 扩展商店](https://chromewebstore.google.com/detail/eclipse-tab/lcnmbgidemidmfffplkpflpdpmfdgabp?utm_source=ext_app_menu) |
+| <img src="https://raw.githubusercontent.com/alrra/browser-logos/main/src/edge/edge_48x48.png" width="20" /> **Edge** | [Edge 扩展商店](https://microsoftedge.microsoft.com/addons/detail/eclipse-tab/omlbmhdkajhbcdhjdgjalelbbmjoekfj?hl=zh-cn) |
+| <img src="https://raw.githubusercontent.com/alrra/browser-logos/main/src/firefox/firefox_48x48.png" width="20" /> **Firefox** | [Firefox 扩展商店](https://addons.mozilla.org/zh-CN/firefox/addon/eclipse-tab/) |
 
 <details>
-<summary>📋 点击展开手动安装步骤</summary>
+<summary>🛠️ 手动安装 / Zen Browser 配置</summary>
 
 <br>
 
-**Chrome / Edge**
+**Chrome / Edge 手动安装**
 1. 下载项目并解压
-2. 打开 `chrome://extensions/` 或 `edge://extensions/`
-3. 开启"开发者模式"
-4. 点击"加载已解压的扩展程序"，选择 `dist` 文件夹
+2. 打开 `chrome://extensions/` 或 `edge://extensions/`，开启「开发者模式」
+3. 点击「加载已解压的扩展程序」，选择 `dist` 文件夹
+
+**Zen Browser**（基于 Firefox）
+1. 按 Firefox 方式安装后，打开 `about:config`
+2. 将 `zen.urlbar.replace-newtab` 设为 `false`
 
 </details>
-
-### 🦊 Zen Browser 使用方法
-
-<details>
-<summary>📋 点击展开 Zen Browser 配置步骤</summary>
-
-<br>
-
-Zen Browser 基于 Firefox,需要额外配置才能正常使用 Eclipse Tab:
-
-1. 按照上述 Firefox 的方式安装扩展
-2. 点击新建标签页,在地址栏输入 `about:config`
-3. 在搜索框中输入 `zen.urlbar.replace-newtab`
-4. 将该选项的值设置为 `false`(禁用)
-5. 重新打开新标签页即可使用 Eclipse Tab
-
-> 💡 **提示**: 这个设置是为了禁用 Zen Browser 自带的新标签页弹窗,让 Eclipse Tab 能够正常显示。
-
-</details>
-
-### 🚀 开始使用
-
-安装后打开新标签页：
-
-```
-1️⃣ 添加应用 → 点击编辑按钮添加常用网站
-2️⃣ 创建空间 → 右键 Navigator 创建工作空间
-3️⃣ 记录灵感 → 双击页面添加贴纸
-4️⃣ 个性化 → 设置主题和壁纸
-```
 
 <br>
 
@@ -110,23 +59,27 @@ Zen Browser 基于 Firefox,需要额外配置才能正常使用 Eclipse Tab:
 
 ### ✏️ Zen Shelf - 灵感白板
 
-> 将新标签页变成自由的创意空间,像桌面便签纸和照片墙一样随时记录灵感。
+> 自由的创意画布，像便签纸和照片墙一样记录灵感。
 
-- 📝 **文字贴纸** - 快速记录想法,自定义样式
-- ️ **图片贴纸** - 保存灵感图片,自由缩放
-- 🎭 **自由布局** - 拖拽摆放,自动避让界面元素
+- 📝 **文字贴纸** - 自定义字号（12–120px）、颜色、对齐方式
+- ☑️ **复选框模式** - 贴纸可添加复选框，点击切换完成状态
+- 🔗 **链接卡片** - 输入 URL 后一键转为带标题和封面的链接卡片；双击卡片直接跳转
+- 🖼️ **图片贴纸** - 支持上传、粘贴图片及 SVG，自由缩放
+- 🎭 **自由布局** - 拖拽摆放，自动避让界面元素
+- 📌 **固定贴纸** - 右键可固定贴纸，防止误触移动
+- 🗑️ **回收站** - 删除的贴纸进入回收站，可随时恢复
 
 </td>
 <td width="50%" valign="top">
 
 ### 🌐 Focus Spaces - 多重空间
 
-> 为不同场景创建独立工作空间,实现工作、学习、娱乐的完美分离。
+> 为不同场景创建独立工作空间，工作、学习、娱乐互不干扰。
 
-- 🗂️ **多空间管理** - 创建、切换、导入导出空间
-- 📋 **独立应用列表** - 每个空间有自己的应用
-- 🚀 **长按快速跳转** - 长按 Navigator 弹出空间选择器，按住滑动直达目标空间
-- 💼 **场景化使用** - 工作、学习、娱乐互不干扰
+- 🗂️ **多空间管理** - 创建、重命名、置顶、删除
+- 📋 **独立应用列表** - 每个空间有专属的 Dock 应用
+- 🚀 **长按快速跳转** - 长按 Navigator 弹出空间选择器，滑动直达目标空间
+- 📤 **导入 / 导出** - 支持导出当前空间或一次导出全部空间配置
 
 </td>
 </tr>
@@ -135,23 +88,24 @@ Zen Browser 基于 Firefox,需要额外配置才能正常使用 Eclipse Tab:
 
 ### 🚀 Dock 应用栏
 
-> macOS 风格的应用管理,优雅高效。
+> macOS 风格的应用管理，优雅高效。
 
 - 📌 **快速访问** - 常用网站一键打开
-- 📁 **文件夹整理** - 拖拽创建文件夹,保持整洁
-- ✨ **流畅动画** - 优雅的交互体验
-- 🔍 **智能图标** - 自动提取高分辨率图标，支持智能文本图标生成
+- 📁 **文件夹整理** - 拖拽创建文件夹；少于 2 个应用自动解散
+- 🔍 **智能图标** - 多阶策略自动获取高清图标，兜底生成文字图标
+- 📚 **批量导入** - 从浏览器书签导入，或用 AI 生成 JSON 一键导入
 
 </td>
 <td width="50%" valign="top">
 
 ### 🎨 精美主题
 
-> 个性化你的新标签页,多种主题模式和自定义选项。
+> 个性化你的新标签页。
 
-- 🌈 **四种模式** - Default、Light、Dark、Auto 自动跟随系统
-- 🖼️ **自定义背景** - 渐变色、纯色、上传壁纸,支持纹理叠加
-- 🎯 **智能适配** - 自动调整文字颜色,确保可读性
+- 🌈 **四种模式** - Default、Light、Dark、Auto 跟随系统
+- 🖼️ **自定义背景** - 渐变色、纯色、上传壁纸，支持纹理叠加
+- 🎯 **智能适配** - 自动调整文字颜色确保可读性
+- 🌐 **多语言** - 支持中文 / English 切换
 
 </td>
 </tr>
@@ -160,12 +114,12 @@ Zen Browser 基于 Firefox,需要额外配置才能正常使用 Eclipse Tab:
 
 ### ☁️ 云端同步
 
-> 通过 WebDAV 多端同步，配置随身，安全可控。
+> 通过 WebDAV 多端同步，安全可控，数据完全属于你。
 
-- 🔄 **自动同步** - 打开标签页自动检测并同步
-- 📦 **数据全量备份** - 配置/空间/贴纸一键同步
-- 🖼️ **资产可选** - 壁纸/贴纸图片按需同步(默认关闭)
-- 🆕 **新设备无忧** - 配置 WebDAV 即自动拉取数据
+- 🔄 **自动同步** - 打开新标签页自动检测并同步
+- 📦 **全量备份** - 配置 / 空间 / 贴纸一键同步
+- 🖼️ **资产可选** - 壁纸和贴纸图片按需开启同步（默认关闭）
+- 🆕 **新设备无忧** - 配置 WebDAV 即自动拉取全部数据
 
 </td>
 </tr>
@@ -175,110 +129,81 @@ Zen Browser 基于 Firefox,需要额外配置才能正常使用 Eclipse Tab:
 
 ## 💡 使用技巧
 
-> 这里列出一些容易被忽略的功能和交互方式，帮助你更好地使用 Eclipse Tab。
+### 🎯 界面
 
-### 🎯 界面交互
+- **设置**：鼠标移到页面**左上角**出现设置图标 ⚙️
+- **编辑 Dock**：鼠标移到页面**右上角**出现编辑按钮 ✏️，或右键 Dock 图标直接编辑 / 删除
 
-- **设置入口**：鼠标移动到页面**左上角**会出现设置图标 ⚙️，点击可进入设置
-- **编辑模式**：鼠标移动到页面**右上角**会出现编辑按钮 ✏️，点击可编辑 Dock 应用
+### ✏️ Zen Shelf
 
-### ✏️ Zen Shelf 技巧
+| 操作 | 说明 |
+|:---|:---|
+| 双击空白处 | 快速创建文字贴纸 |
+| 双击文字贴纸 | 编辑内容 |
+| `Ctrl+V` | 粘贴剪贴板图片为图片贴纸 |
+| `Shift` + 点击贴纸 | 多选文字贴纸，可批量拖动或按 `Delete` 批量删除 |
+| 拖到屏幕边缘 | 拖动贴纸到边缘回收站图标，松手即删除 |
+| 输入 URL 后点击链接按钮 | 将纯 URL 文字转为链接卡片 |
+| 工具栏 +/- 或 `Ctrl+↑↓` | 调整字号；按住 `Shift` 大步长调整 |
+| `Ctrl+1`~`7` | 快速切换贴纸颜色 |
+| 右键贴纸 | 编辑、复制、导出、固定、删除等操作 |
+| 右键背景 | 添加贴纸、上传图片、进入编辑模式、打开设置、清空所有贴纸 |
+| 回收站侧边栏 | 左滑还原，右滑永久删除 |
+| 文字中 `[文本](url)` | 渲染为可点击超链接 |
 
-- **双击创建**：双击页面空白处快速创建文字贴纸
-- **粘贴图片**：使用 `Ctrl+V` 可以直接粘贴剪贴板中的图片
-- **双击编辑**：双击文字贴纸可以重新编辑内容
-- **导出图片**：文字贴纸支持导出为图片，方便分享
-- **自动置顶**：点击贴纸会自动置顶，确保重要内容始终可见
-- **回收站**：误删贴纸可从屏幕边缘回收站恢复或清除
+### 🚀 Dock
 
-### 🚀 Dock 技巧
+- **图标右键**：可直接编辑或删除，无需进入编辑模式
+- **刷新图标**：设置面板中「批量刷新图标」可对当前空间所有图标强制重新获取，适用于图标缺失或需要更新的情况
+- **批量导入**：编辑模式下点击「+」→「批量导入」，支持从书签选择或导入 AI 生成的 JSON
 
-- **长按编辑**：点击右上角编辑按钮、长按 Dock 图标或使用右键菜单可以进入编辑模式
-- **创建文件夹**：拖拽一个应用到另一个应用上会自动创建文件夹
-- **自动解散**：文件夹中少于 2 个应用时会自动解散
+### 🌐 Focus Spaces
 
-### 🌐 Focus Spaces 技巧
+- **循环切换**：点击 Dock 最右侧空间按钮循环切换
+- **快速跳转**：长按空间按钮（0.2 秒）弹出选择器，按住滑动到目标空间后松手直接跳转
+- **空间管理**：右键空间按钮 → 置顶、重命名、删除、导入 / 导出（支持导出全部空间）
 
-- **循环切换**：点击 Dock 栏最右侧的空间切换按钮可以循环切换不同空间
-- **快速跳转**：长按空间切换按钮（0.2 秒），弹出所有其他空间的选择器，按住向上滑动到目标空间后松手即可直接跳转，无需逐个切换
-- **空间管理**：右键 Dock 栏最右侧的空间切换按钮可以置顶空间、修改空间名称、删除空间、导入导出空间配置
+### ☁️ 云同步
 
-### ☁️ 云同步技巧
-
-- **配置 WebDAV**：在同步面板填入服务器地址和账号密码
-- **自动同步**：开启后每次打开新标签页自动检测云端更新，本地有改动也会自动上传
-- **图片同步**：壁纸和贴纸图片默认为不同步，可在同步面板中手动开启
-- **多设备使用**：多台设备配置同一 WebDAV，数据将自动保持一致
+- 在同步面板填入 WebDAV 服务器地址和账号密码，开启自动同步后每次打开新标签页会自动检测更新
+- 壁纸和贴纸图片默认不同步，可在面板中手动开启
 
 ---
 
 ## ❓ 常见问题
 
-### 🔒 数据与隐私
-
 **数据存储在哪里？**
-- 所有数据存储在本地浏览器中，使用 `localStorage` 和 `IndexedDB`
-- 不会上传到任何云端服务器
-- 您的数据完全属于您自己，我们无法访问
-
-**是否会上传用户数据？**
-- 不会。Eclipse Tab 不收集、不上传任何用户数据
-- 所有功能完全在本地运行，保证您的隐私安全
-
-**卸载扩展后数据会怎样？**
-- 卸载扩展后，浏览器会清除扩展的所有数据
-- 建议在卸载前导出空间配置和重要贴纸内容
-
-### 💾 备份与恢复
+所有数据存储在本地浏览器（`localStorage` + `IndexedDB`），不会上传至任何服务器。
 
 **如何备份数据？**
-- **完整备份**：打开左上角设置 → 选择“导出备份”→ 保存 `.zip` 文件
-- **空间配置**：右键 Dock 栏最右侧的空间切换按钮 → 选择“导出空间”→ 保存 JSON 文件
+- **完整备份**：设置 → 导出备份 → 保存 `.zip` 文件
+- **空间配置**：右键空间按钮 → 导出空间（或导出全部空间）→ 保存 JSON 文件
 
 **如何恢复数据？**
-- **完整恢复**：打开左上角设置 → 选择“导入备份”→ 选择之前导出的 `.zip` 文件
-- **空间配置**：右键 Dock 栏最右侧的空间切换按钮 → 选择“导入空间”→ 选择之前导出的 JSON 文件
+- **完整恢复**：设置 → 导入备份 → 选择 `.zip` 文件
+- **空间配置**：右键空间按钮 → 导入空间 → 选择 JSON 文件
 
-**云端同步和本地备份有什么区别？**
-- **导出/导入备份**：生成一个本地 `.zip` 文件，适合手动备份、迁移和恢复
-- **WebDAV 云端同步**：通过你自己的 WebDAV 服务在多台设备间同步配置，壁纸和贴纸图片可按需开启
+**云端同步和本地备份的区别？**
+- **本地备份**：生成 `.zip` 文件，适合手动迁移和恢复
+- **WebDAV 同步**：通过你自己的 WebDAV 服务多设备实时同步，壁纸和贴纸图片可按需开启
 
 ---
 
 ## 📝 关于项目
 
-Eclipse Tab 是一个使用现代 Web 技术构建的浏览器扩展项目，90% 的代码通过 AI 辅助编码（VibeCoding）完成。
+Eclipse Tab 使用现代 Web 技术构建，90% 的代码通过 AI 辅助编码（VibeCoding）完成。
 
-特别感谢 [@SheepTAO](https://github.com/SheepTAO) 贡献 WebDAV 云端同步功能，让 Eclipse Tab 可以在多设备间同步配置与资源。
+特别感谢 [@SheepTAO](https://github.com/SheepTAO) 贡献 WebDAV 云端同步功能，[@lycohana](https://github.com/lycohana) 贡献文字贴纸超链接解析相关逻辑。
 
-**技术栈与架构**
-- **React 18 + TypeScript + Vite**
-- **Feature-based 架构**：功能模块化分离（Dock, Shelf, Spaces, Theme 等）
-- **UI 样式**：CSS Modules 结合原生 CSS 变量实现动态主题系统
+**技术栈**：React 18 + TypeScript + Vite · CSS Modules · Feature-based 架构
 
-**⚡ 性能与体验优化**
-- **智能渲染调度**：细粒度 Context 状态管理、非核心组件懒加载及 RAF (RequestAnimationFrame) 节流
-- **智能图标引擎**：支持多级缓存 (Memory + IndexedDB)、并发请求去重及多阶探测（高优本地策略，低阶 API 降级）
-- **原生层优化**：Web Worker 异步图片压缩，SVG 滤镜实现完美文字描边效果
-- **自适应布局**：Zen Shelf 使用视口缩放 (Viewport Scaling) 实现响应式贴纸布局
-
-**数据存储**
-- 遵循完全本地化 (Local-First) 的数据策略
-- 基于 localStorage 与 IndexedDB 的混合存储
-- 支持大容量壁纸及图片贴纸存储（突破传统扩展 5MB 限制）
+**性能亮点**：多级图标缓存（Memory + IndexedDB）、并发请求去重、RAF 节流渲染、Web Worker 图片压缩、视口缩放响应式布局
 
 ---
 
 ## 🙏 致谢
 
-感谢所有使用和支持 Eclipse Tab 的用户！
-
-如果你喜欢这个项目，欢迎：
-- ⭐ Star 本项目
-- 🐛 提交 Issue 反馈问题
-- 💡 分享你的使用体验
-
----
+感谢所有使用和支持 Eclipse Tab 的用户！欢迎 ⭐ Star、提交 Issue 或分享使用体验。
 
 ## 📄 许可证
 

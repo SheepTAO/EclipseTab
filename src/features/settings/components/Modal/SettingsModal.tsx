@@ -603,12 +603,13 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({ isOpen, onClose, a
                             <PermissionToggle />
                         </div>
 
-                        {/* 修复破损与失效图标 */}
+                        {/* 批量刷新图标 */}
                         <div className={styles.layoutRow}>
                             <button 
                                 className={`${styles.layoutToggleOption} ${styles.fixButton}`}
                                 onClick={handleFixIcons}
                                 disabled={isFixingIcons}
+                                title={t.settings.fixIconsTooltip}
                             >
                                 {isFixingIcons ? '...' : t.settings.fixIcons}
                             </button>

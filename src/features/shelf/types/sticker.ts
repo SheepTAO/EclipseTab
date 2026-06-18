@@ -12,6 +12,14 @@ export interface TextStickerStyle {
     maxWidth?: number;                       // 最大宽度限制 (px)
 }
 
+export interface LinkCardMetadata {
+    url: string;             // 跳转地址
+    title: string;           // 卡片主标题
+    subtitle: string;        // 卡片副标题
+    imageUrl?: string;       // 预览图地址
+    siteName?: string;       // 站点名称
+}
+
 /**
  * 贴纸数据结构
  */
@@ -27,6 +35,7 @@ export interface Sticker {
     style?: TextStickerStyle; // 仅针对文字贴纸的样式
     hasCheckbox?: boolean;   // 是否带有复选框 (仅文字贴纸)
     isChecked?: boolean;     // 复选框是否已勾选
+    linkCard?: LinkCardMetadata; // 链接卡片元数据（仅文字贴纸）
 }
 
 /**

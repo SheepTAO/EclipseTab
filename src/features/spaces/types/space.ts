@@ -110,14 +110,16 @@ function createGoogleApps(): DockItem[] {
             id: crypto.randomUUID(),
             name: 'YouTube',
             url: 'https://www.youtube.com',
-            icon: 'https://www.youtube.com/s/desktop/f506bd45/img/favicon_144x144.png',
+            icon: 'https://www.youtube.com/favicon.ico',
+            iconSmall: true,
             type: 'app',
         },
         {
             id: crypto.randomUUID(),
             name: 'Photos',
             url: 'https://photos.google.com',
-            icon: 'https://ssl.gstatic.com/social/photosui/images/logo/favicon_96.png',
+            icon: 'https://www.gstatic.com/images/branding/product/2x/photos_96dp.png',
+            iconSmall: true,
             type: 'app',
         },
     ];

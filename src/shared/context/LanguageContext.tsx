@@ -24,6 +24,7 @@ interface Translations {
         openInNewTab: string;
         openInCurrentTab: string;
         fixIcons: string;
+        fixIconsTooltip: string;
         exportBackup: string;
         importBackup: string;
         importBackupConfirm: string;
@@ -47,6 +48,8 @@ interface Translations {
         editSticker: string;
         exportAsImage: string;
         deleteSticker: string;
+        clearAllStickers: string;
+        clearAllStickersConfirm: string;
         edit: string;
         delete: string;
         restore: string;
@@ -166,7 +169,8 @@ const translations: Record<Language, Translations> = {
             tabOpeningBehavior: 'Open Tabs In',
             openInNewTab: 'New',
             openInCurrentTab: 'Current',
-            fixIcons: 'Fix Broken/Missing Icons',
+            fixIcons: 'Refresh Icons',
+            fixIconsTooltip: 'Re-fetch icons for the current space. Useful for missing icons, fallback text icons, or old icons from previous versions.',
             exportBackup: 'Export Backup',
             importBackup: 'Import Backup',
             importBackupConfirm: 'Importing will overwrite current spaces, links, stickers, wallpaper, and settings. Continue?',
@@ -190,6 +194,8 @@ const translations: Record<Language, Translations> = {
             editSticker: 'Edit Sticker',
             exportAsImage: 'Export as Image',
             deleteSticker: 'Delete Sticker',
+            clearAllStickers: 'Clear All Stickers',
+            clearAllStickersConfirm: 'Are you sure you want to delete all stickers?\nText and image stickers will all be moved to the recycle bin.',
             edit: 'Edit',
             delete: 'Delete',
             restore: 'Restore',
@@ -307,7 +313,8 @@ const translations: Record<Language, Translations> = {
             tabOpeningBehavior: '新标签页打开',
             openInNewTab: '开启',
             openInCurrentTab: '关闭',
-            fixIcons: '修复破损与失效图标',
+            fixIcons: '批量刷新图标',
+            fixIconsTooltip: '重新获取当前空间的图标。适用于图标缺失、显示为文字兜底图标，或旧版本遗留图标需要更新的情况。',
             exportBackup: '导出备份',
             importBackup: '导入备份',
             importBackupConfirm: '导入会覆盖当前空间、链接、贴纸、壁纸和设置。确定继续吗？',
@@ -331,6 +338,8 @@ const translations: Record<Language, Translations> = {
             editSticker: '编辑贴纸',
             exportAsImage: '导出为图片',
             deleteSticker: '删除贴纸',
+            clearAllStickers: '一键清除所有贴纸',
+            clearAllStickersConfirm: '确定要删除所有贴纸吗？\n文字和图片贴纸都会被移入回收站。',
             edit: '编辑',
             delete: '删除',
             restore: '还原',

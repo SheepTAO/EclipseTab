@@ -315,9 +315,11 @@ export const DockProvider: React.FC<{ children: React.ReactNode }> = ({ children
                         return { ...item, ...data };
                     }
                     if (item.type === 'folder' && item.items) {
+                        const updatedItems = updateItemRecursively(item.items);
                         return {
                             ...item,
-                            items: updateItemRecursively(item.items),
+                            items: updatedItems,
+                            icon: generateFolderIcon(updatedItems),
                         };
                     }
                     return item;
@@ -331,6 +333,7 @@ export const DockProvider: React.FC<{ children: React.ReactNode }> = ({ children
                 name: data.name || '',
                 url: data.url,
                 icon: data.icon,
+                iconSmall: data.iconSmall,
                 type: 'app',
             };
             setDockItems(prev => [...prev, newItem]);

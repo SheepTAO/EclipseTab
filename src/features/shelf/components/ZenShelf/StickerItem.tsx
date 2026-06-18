@@ -3,6 +3,7 @@ import { Sticker, IMAGE_MAX_WIDTH } from '@/shared/types';
 import { FloatingToolbar } from './FloatingToolbar';
 import { useThemeData } from '@/features/theme/context/ThemeContext';
 import { db } from '@/shared/utils/db';
+import { hasMarkdownLinks, splitTextWithLinks } from '@/shared/utils/markdownLinks';
 import checkIcon from '@/assets/icons/for-checkbox.svg';
 import styles from './ZenShelf.module.css';
 
@@ -49,10 +50,15 @@ const UI_ZONES = {
 interface StickerItemProps {
     sticker: Sticker;
     isSelected: boolean;
+    isBatchSelected?: boolean;
     isCreativeMode: boolean;
     onSelect: () => void;
+    onToggleBatchSelect?: () => void;
     onDelete: () => void;
     onPositionChange: (x: number, y: number) => void;
+    onBatchPositionPreview?: (activeStickerId: string, dx: number, dy: number) => void;
+    onBatchPositionCommit?: (activeStickerId: string, dx: number, dy: number) => void;
+    onBatchDelete?: (activeStickerId: string) => void;
     onStyleChange: (updates: Partial<Sticker['style']>) => void;
     onBringToTop: () => void;
     onScaleChange: (scale: number) => void;
@@ -67,10 +73,15 @@ interface StickerItemProps {
 const StickerItemComponent: React.FC<StickerItemProps> = ({
     sticker,
     isSelected,
+    isBatchSelected = false,
     isCreativeMode,
     onSelect,
+    onToggleBatchSelect,
     onDelete,
     onPositionChange,
+    onBatchPositionPreview,
+    onBatchPositionCommit,
+    onBatchDelete,
     onStyleChange,
     onBringToTop,
     onScaleChange,
@@ -81,7 +92,7 @@ const StickerItemComponent: React.FC<StickerItemProps> = ({
     onDragEnd,
     onToggleCheckbox,
 }) => {
-    const { theme } = useThemeData();
+    const { theme, openInNewTab } = useThemeData();
     const elementRef = useRef<HTMLDivElement>(null);
     const [isDragging, setIsDragging] = useState(false);
     const [isResizing, setIsResizing] = useState(false);
@@ -183,6 +194,13 @@ const StickerItemComponent: React.FC<StickerItemProps> = ({
             return;
         }
 
+        if (e.shiftKey && sticker.type === 'text') {
+            onToggleBatchSelect?.();
+            e.preventDefault();
+            e.stopPropagation();
+            return;
+        }
+
         // 在创意模式下...
         if (isCreativeMode && !isEditMode) {
             onSelect();
@@ -241,6 +259,7 @@ const StickerItemComponent: React.FC<StickerItemProps> = ({
                 x: dragStartRef.current.stickerX + dx / viewportScale,
                 y: dragStartRef.current.stickerY + dy / viewportScale,
             };
+            onBatchPositionPreview?.(sticker.id, dx / viewportScale, dy / viewportScale);
 
             if (positionRafId === null) {
                 positionRafId = requestAnimationFrame(() => {
@@ -347,7 +366,11 @@ const StickerItemComponent: React.FC<StickerItemProps> = ({
 
                     // Actual delete after animation
                     setTimeout(() => {
-                        onDelete();
+                        if (isBatchSelected) {
+                            onBatchDelete?.(sticker.id);
+                        } else {
+                            onDelete();
+                        }
                     }, 300);
                     return;
                 }
@@ -484,6 +507,14 @@ const StickerItemComponent: React.FC<StickerItemProps> = ({
 
             if (needsAdjustment || pendingPosition) {
                 onPositionChange(finalX, finalY);
+                const dragStart = dragStartRef.current;
+                if (pendingPosition && dragStart) {
+                    onBatchPositionCommit?.(
+                        sticker.id,
+                        finalX - dragStart.stickerX,
+                        finalY - dragStart.stickerY
+                    );
+                }
             }
 
             setIsDragging(false);
@@ -518,7 +549,7 @@ const StickerItemComponent: React.FC<StickerItemProps> = ({
                 cancelAnimationFrame(positionRafId);
             }
         };
-    }, [isDragging, onPositionChange, updatePhysics]);
+    }, [isDragging, isBatchSelected, onBatchDelete, onBatchPositionCommit, onBatchPositionPreview, onDelete, onPositionChange, sticker.id, sticker.x, sticker.y, updatePhysics, viewportScale]);
 
     // 卸载时清理 RAF
     useEffect(() => {
@@ -603,6 +634,14 @@ const StickerItemComponent: React.FC<StickerItemProps> = ({
 
     const handleDoubleClick = (e: React.MouseEvent) => {
         e.stopPropagation();
+        if (sticker.linkCard) {
+            if (openInNewTab) {
+                window.open(sticker.linkCard.url, '_blank', 'noopener,noreferrer');
+            } else {
+                window.location.href = sticker.linkCard.url;
+            }
+            return;
+        }
         onDoubleClick?.();
     };
 
@@ -612,7 +651,8 @@ const StickerItemComponent: React.FC<StickerItemProps> = ({
         isDragging && styles.dragging,
         isBouncing && styles.bounceBack,
         isDropDeleting && styles.dropDelete,
-        isSelected && styles.selected,
+        isSelected && !isBatchSelected && styles.selected,
+        isBatchSelected && styles.batchSelected,
         isCreativeMode && styles.creativeHover,
     ].filter(Boolean).join(' ');
 
@@ -639,7 +679,22 @@ const StickerItemComponent: React.FC<StickerItemProps> = ({
                 onMouseDown={handleMouseDown}
                 onDoubleClick={handleDoubleClick}
             >
-                {sticker.type === 'text' ? (
+                {sticker.type === 'text' && sticker.linkCard ? (
+                    <article className={`${styles.linkCardSticker} ${!sticker.linkCard.imageUrl ? styles.noImage : ''}`}>
+                        {sticker.linkCard.imageUrl && (
+                            <img
+                                src={sticker.linkCard.imageUrl}
+                                alt=""
+                                className={styles.linkCardImage}
+                                draggable={false}
+                            />
+                        )}
+                        <div className={styles.linkCardContent}>
+                            <div className={styles.linkCardTitle}>{sticker.linkCard.title}</div>
+                            <div className={styles.linkCardSubtitle}>{sticker.linkCard.subtitle}</div>
+                        </div>
+                    </article>
+                ) : sticker.type === 'text' ? (
                     <div className={sticker.hasCheckbox ? styles.textStickerContainer : ''}>
                         {sticker.hasCheckbox && (
                             <button
@@ -675,7 +730,28 @@ const StickerItemComponent: React.FC<StickerItemProps> = ({
                                 fontSize: scaledFontSize,
                             }}
                         >
-                            {sticker.content}
+                            {hasMarkdownLinks(sticker.content) ? (
+                                splitTextWithLinks(sticker.content).map((fragment, index) => (
+                                    fragment.type === 'link' ? (
+                                        <a
+                                            key={index}
+                                            href={fragment.url}
+                                            className={styles.stickerLink}
+                                            target={openInNewTab ? '_blank' : '_self'}
+                                            rel={openInNewTab ? 'noopener noreferrer' : undefined}
+                                            onMouseDown={(e) => e.stopPropagation()}
+                                            onPointerDown={(e) => e.stopPropagation()}
+                                            onClick={(e) => e.stopPropagation()}
+                                        >
+                                            {fragment.content}
+                                        </a>
+                                    ) : (
+                                        <span key={index}>{fragment.content}</span>
+                                    )
+                                ))
+                            ) : (
+                                sticker.content
+                            )}
                         </div>
                     </div>
                 ) : (
@@ -748,10 +824,15 @@ const arePropsEqual = (prev: StickerItemProps, next: StickerItemProps) => {
         prev.sticker.isPinned === next.sticker.isPinned &&
         prev.sticker.hasCheckbox === next.sticker.hasCheckbox &&
         prev.sticker.isChecked === next.sticker.isChecked &&
+        prev.sticker.linkCard?.url === next.sticker.linkCard?.url &&
+        prev.sticker.linkCard?.title === next.sticker.linkCard?.title &&
+        prev.sticker.linkCard?.subtitle === next.sticker.linkCard?.subtitle &&
+        prev.sticker.linkCard?.imageUrl === next.sticker.linkCard?.imageUrl &&
         prev.sticker.style?.color === next.sticker.style?.color &&
         prev.sticker.style?.textAlign === next.sticker.style?.textAlign &&
         prev.sticker.style?.fontSize === next.sticker.style?.fontSize &&
         prev.isSelected === next.isSelected &&
+        prev.isBatchSelected === next.isBatchSelected &&
         prev.isCreativeMode === next.isCreativeMode &&
         prev.isEditMode === next.isEditMode &&
         prev.viewportScale === next.viewportScale

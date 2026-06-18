@@ -163,7 +163,6 @@ function App() {
   const handleModalSave = useCallback((data: Partial<DockItem>) => {
     handleItemSave(data, editingItem);
     setIsAddEditModalOpen(false);
-    setEditingItem(null);
   }, [handleItemSave, editingItem]);
 
   const handleFolderItemClick = useCallback((item: DockItem) => {
@@ -317,7 +316,6 @@ function App() {
             item={editingItem}
             onClose={() => {
               setIsAddEditModalOpen(false);
-              setEditingItem(null);
             }}
             onSave={handleModalSave}
             anchorRect={addIconAnchor}

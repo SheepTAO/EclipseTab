@@ -314,7 +314,7 @@ export const AddEditModal: React.FC<AddEditModalProps> = ({
         </button>
       </div>
 
-      {!item && onBatchImport && (
+      {isOpen && !item && onBatchImport && (
         <>
           <div className={styles.footerDivider} />
           <div

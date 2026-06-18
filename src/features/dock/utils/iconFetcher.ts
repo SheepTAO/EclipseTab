@@ -207,14 +207,30 @@ const fetchIconFromNetwork = async (
     const urlObj = new URL(url);
     const protocol = urlObj.protocol;
     const origin = `${protocol}//${domain}`;
+    const normalizedDomain = domain.replace(/^www\./, '');
 
-    const highPriorityCandidates = [
+    const specialCandidates: Record<string, string[]> = {
+      'chatgpt.com': [
+        'https://chatgpt.com/favicon.ico',
+        'https://chatgpt.com/apple-touch-icon.png',
+      ],
+      'youtube.com': [
+        'https://www.youtube.com/favicon.ico',
+      ],
+      'photos.google.com': [
+        'https://www.gstatic.com/images/branding/product/2x/photos_96dp.png',
+        'https://photos.google.com/favicon.ico',
+      ],
+    };
+
+    const highPriorityCandidates = Array.from(new Set([
+      ...(specialCandidates[normalizedDomain] || []),
       `${origin}/apple-touch-icon.png`,
       `${origin}/apple-touch-icon-180x180.png`,
       `${origin}/apple-touch-icon-precomposed.png`,
       `${origin}/icon-192x192.png`,
       `${origin}/favicon.ico`,
-    ];
+    ]));
 
     const fallbackCandidates = [
       `https://icons.duckduckgo.com/ip3/${domain}.ico`,
@@ -231,22 +247,51 @@ const fetchIconFromNetwork = async (
     const fetchResult = await tryFetchStrategy(highPriorityCandidates, fallbackCandidates, minSize);
     if (fetchResult) return fetchResult;
 
-    // ================================================================
-    // 策略 2: 旧版 Image 探测（不需要 CORS 权限）
-    // 能获取 Blob 则返回 Blob，否则返回直接 URL
-    // ================================================================
-    const legacyResult = await tryImageProbeStrategy(allCandidates, minSize);
-    if (legacyResult) return legacyResult;
-
-    // ================================================================
-    // 策略 3: 动态请求权限后重试 fetch → 返回 Blob
-    // ================================================================
-    if (allowPermissionRequest) {
+    const retryWithPermission = async (probeMinSize: number): Promise<NetworkIconResult | null> => {
       const permitted = await ensureHostPermission();
       if (permitted) {
-        const retryResult = await tryFetchStrategy(highPriorityCandidates, fallbackCandidates, minSize);
+        const retryResult = await tryFetchStrategy(highPriorityCandidates, fallbackCandidates, probeMinSize);
         if (retryResult) return retryResult;
       }
+      return null;
+    };
+
+    // ================================================================
+    // 策略 2: 官方小图标兜底
+    // 有些网站（如 ChatGPT）官方 favicon 小于 100px，不能因为尺寸小就选第三方图标
+    // ================================================================
+    if (minSize > 0) {
+      const officialSmallResult = await tryImageProbeStrategy(highPriorityCandidates, 0);
+      if (officialSmallResult) {
+        if (officialSmallResult.kind === 'blob') return officialSmallResult;
+        if (allowPermissionRequest) {
+          const retryResult = await retryWithPermission(0);
+          if (retryResult) return retryResult;
+        }
+        return officialSmallResult;
+      }
+    }
+
+    // ================================================================
+    // 策略 3: 旧版 Image 探测（不需要 CORS 权限）
+    // 能获取 Blob 则返回 Blob，否则只在权限重试失败后返回直接 URL
+    // ================================================================
+    const legacyResult = await tryImageProbeStrategy(allCandidates, minSize);
+    if (legacyResult) {
+      if (legacyResult.kind === 'blob') return legacyResult;
+      if (allowPermissionRequest) {
+        const retryResult = await retryWithPermission(minSize);
+        if (retryResult) return retryResult;
+      }
+      return legacyResult;
+    }
+
+    // ================================================================
+    // 策略 4: 动态请求权限后重试 fetch → 返回 Blob
+    // ================================================================
+    if (allowPermissionRequest) {
+      const retryResult = await retryWithPermission(minSize);
+      if (retryResult) return retryResult;
     }
 
     return null;
@@ -283,6 +328,29 @@ const tryFetchStrategy = async (
         blob: best.blob,
         iconSmall: best.width < SMALL_ICON_THRESHOLD || best.height < SMALL_ICON_THRESHOLD
       };
+    }
+
+    // 官方图标即使小于 100px，也比第三方服务返回的非官方图标更可信
+    if (minSize > 0) {
+      const smallOfficialResults = await Promise.allSettled(
+        highPriorityCandidates.map(src => fetchAndProbeImage(src, 2000, 0))
+      );
+
+      const validSmallOfficial = smallOfficialResults
+        .filter((r): r is PromiseFulfilledResult<{ blob: Blob; width: number; height: number }> =>
+          r.status === 'fulfilled'
+        )
+        .map(r => r.value)
+        .sort((a, b) => b.width - a.width);
+
+      if (validSmallOfficial.length > 0) {
+        const best = validSmallOfficial[0];
+        return {
+          kind: 'blob',
+          blob: best.blob,
+          iconSmall: best.width < SMALL_ICON_THRESHOLD || best.height < SMALL_ICON_THRESHOLD
+        };
+      }
     }
 
     // 并行尝试 fallback（接受任意尺寸）

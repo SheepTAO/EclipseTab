@@ -1,10 +1,11 @@
 import React, { useState, useRef, useCallback, useEffect } from 'react';
 import { useDockUI } from '@/features/dock/context/DockContext';
 import { useZenShelf } from '@/features/shelf/context/ZenShelfContext';
-import { Sticker, IMAGE_MAX_WIDTH } from '@/shared/types';
+import { LinkCardMetadata, Sticker, IMAGE_MAX_WIDTH } from '@/shared/types';
 import { compressStickerImageToBlob } from '@/features/theme/utils/imageCompression';
 import { copyBlobToClipboard, createImageStickerImage, createTextStickerImage, downloadBlob } from '@/features/theme/utils/canvasUtils';
 import { db } from '@/shared/utils/db';
+import { useLanguage } from '@/shared/context/LanguageContext';
 
 // 贴纸图片 ID 前缀
 const STICKER_IMG_PREFIX = 'stickerimg_';
@@ -38,10 +39,35 @@ const UI_SELECTORS = [
     '[class*="contextMenu"]',
 ].join(', ');
 
+const STICKER_EDGE_MARGIN = 20;
+
+const clampStickerPositionToViewport = (
+    x: number,
+    y: number,
+    stickerEl: HTMLElement,
+    viewportScale: number
+) => {
+    const rect = stickerEl.getBoundingClientRect();
+    const stickerWidth = rect.width / viewportScale;
+    const stickerHeight = rect.height / viewportScale;
+    const minX = STICKER_EDGE_MARGIN / viewportScale;
+    const minY = STICKER_EDGE_MARGIN / viewportScale;
+    const maxX = (window.innerWidth / viewportScale) - stickerWidth - minX;
+    const maxY = (window.innerHeight / viewportScale) - stickerHeight - minY;
+
+    return {
+        x: maxX < minX ? Math.max(maxX, Math.min(minX, x)) : Math.max(minX, Math.min(maxX, x)),
+        y: maxY < minY ? Math.max(maxY, Math.min(minY, y)) : Math.max(minY, Math.min(maxY, y)),
+    };
+};
+
 export const ZenShelf: React.FC<ZenShelfProps> = ({ onOpenSettings }) => {
     const fileInputRef = useRef<HTMLInputElement>(null);
     const { stickers, selectedStickerId, addSticker, updateSticker, deleteSticker, selectSticker, bringToTop } = useZenShelf();
     const { isEditMode, setIsEditMode } = useDockUI();
+    const { t } = useLanguage();
+    const [batchSelectedStickerIds, setBatchSelectedStickerIds] = useState<string[]>([]);
+    const batchDragStartRef = useRef<Map<string, { x: number; y: number }>>(new Map());
 
     const [textInputPos, setTextInputPos] = useState<{ x: number; y: number } | null>(null);
     const [contextMenu, setContextMenu] = useState<{
@@ -79,7 +105,107 @@ export const ZenShelf: React.FC<ZenShelfProps> = ({ onOpenSettings }) => {
 
     const handleStickerDragEnd = useCallback(() => {
         setIsAnyDragging(false);
+        batchDragStartRef.current = new Map();
     }, []);
+
+    const toggleBatchSelect = useCallback((sticker: Sticker) => {
+        if (sticker.type !== 'text') return;
+
+        setBatchSelectedStickerIds(prev => (
+            prev.includes(sticker.id)
+                ? prev.filter(id => id !== sticker.id)
+                : [...prev, sticker.id]
+        ));
+        selectSticker(null);
+    }, [selectSticker]);
+
+    const ensureBatchDragStart = useCallback(() => {
+        if (batchDragStartRef.current.size > 0) return;
+
+        batchDragStartRef.current = new Map(
+            stickers
+                .filter(sticker => batchSelectedStickerIds.includes(sticker.id))
+                .map(sticker => [sticker.id, { x: sticker.x, y: sticker.y }])
+        );
+    }, [batchSelectedStickerIds, stickers]);
+
+    const previewBatchPosition = useCallback((activeStickerId: string, dx: number, dy: number) => {
+        if (!batchSelectedStickerIds.includes(activeStickerId) || batchSelectedStickerIds.length <= 1) return;
+
+        ensureBatchDragStart();
+        batchSelectedStickerIds.forEach(id => {
+            if (id === activeStickerId) return;
+
+            const startPosition = batchDragStartRef.current.get(id);
+            const stickerEl = document.querySelector<HTMLElement>(`[data-sticker-id="${id}"]`);
+            if (!startPosition || !stickerEl) return;
+
+            stickerEl.style.left = `${(startPosition.x + dx) * viewportScale}px`;
+            stickerEl.style.top = `${(startPosition.y + dy) * viewportScale}px`;
+        });
+    }, [batchSelectedStickerIds, ensureBatchDragStart, viewportScale]);
+
+    const commitBatchPosition = useCallback((activeStickerId: string, dx: number, dy: number) => {
+        if (!batchSelectedStickerIds.includes(activeStickerId) || batchSelectedStickerIds.length <= 1) return;
+
+        ensureBatchDragStart();
+        batchSelectedStickerIds.forEach(id => {
+            if (id === activeStickerId) return;
+
+            const startPosition = batchDragStartRef.current.get(id);
+            const stickerEl = document.querySelector<HTMLElement>(`[data-sticker-id="${id}"]`);
+            if (!startPosition || !stickerEl) return;
+
+            const nextPosition = {
+                x: startPosition.x + dx,
+                y: startPosition.y + dy,
+            };
+            const clampedPosition = clampStickerPositionToViewport(
+                nextPosition.x,
+                nextPosition.y,
+                stickerEl,
+                viewportScale
+            );
+            const needsBounce = Math.abs(clampedPosition.x - nextPosition.x) > 0.1 ||
+                Math.abs(clampedPosition.y - nextPosition.y) > 0.1;
+
+            updateSticker(id, {
+                x: clampedPosition.x,
+                y: clampedPosition.y,
+            });
+
+            if (needsBounce) {
+                stickerEl.classList.add(styles.bounceBack);
+                stickerEl.style.left = `${clampedPosition.x * viewportScale}px`;
+                stickerEl.style.top = `${clampedPosition.y * viewportScale}px`;
+                window.setTimeout(() => {
+                    stickerEl.classList.remove(styles.bounceBack);
+                }, 350);
+            }
+        });
+        setBatchSelectedStickerIds([]);
+        batchDragStartRef.current = new Map();
+    }, [batchSelectedStickerIds, ensureBatchDragStart, updateSticker, viewportScale]);
+
+    const deleteBatchSelection = useCallback((activeStickerId: string) => {
+        const idsToDelete = batchSelectedStickerIds.includes(activeStickerId)
+            ? batchSelectedStickerIds
+            : [activeStickerId];
+
+        idsToDelete.forEach(id => deleteSticker(id));
+        setBatchSelectedStickerIds([]);
+    }, [batchSelectedStickerIds, deleteSticker]);
+
+    const clearAllStickers = useCallback(() => {
+        if (stickers.length === 0) return;
+        if (!window.confirm(t.contextMenu.clearAllStickersConfirm)) return;
+
+        stickers.forEach(sticker => deleteSticker(sticker.id));
+        setBatchSelectedStickerIds([]);
+        selectSticker(null);
+        setEditingSticker(null);
+        setTextInputPos(null);
+    }, [deleteSticker, selectSticker, stickers, t.contextMenu.clearAllStickersConfirm]);
 
 
 
@@ -122,6 +248,25 @@ export const ZenShelf: React.FC<ZenShelfProps> = ({ onOpenSettings }) => {
         return () => document.removeEventListener('contextmenu', handleContextMenu);
     }, [stickers]);
 
+    useEffect(() => {
+        const handleMouseDown = (e: MouseEvent) => {
+            const target = e.target as HTMLElement;
+            if (e.shiftKey || target.closest(UI_SELECTORS) || target.closest('[data-sticker-id]')) {
+                return;
+            }
+
+            setBatchSelectedStickerIds([]);
+        };
+
+        document.addEventListener('mousedown', handleMouseDown);
+        return () => document.removeEventListener('mousedown', handleMouseDown);
+    }, []);
+
+    useEffect(() => {
+        const textStickerIds = new Set(stickers.filter(sticker => sticker.type === 'text').map(sticker => sticker.id));
+        setBatchSelectedStickerIds(prev => prev.filter(id => textStickerIds.has(id)));
+    }, [stickers]);
+
     // 双击背景以快速添加贴纸
     useEffect(() => {
         const handleDoubleClick = (e: MouseEvent) => {
@@ -157,6 +302,12 @@ export const ZenShelf: React.FC<ZenShelfProps> = ({ onOpenSettings }) => {
                     return;
                 }
 
+                if (batchSelectedStickerIds.length > 0) {
+                    batchSelectedStickerIds.forEach(id => deleteSticker(id));
+                    setBatchSelectedStickerIds([]);
+                    return;
+                }
+
                 if (selectedStickerId) {
                     deleteSticker(selectedStickerId);
                 }
@@ -165,7 +316,7 @@ export const ZenShelf: React.FC<ZenShelfProps> = ({ onOpenSettings }) => {
 
         window.addEventListener('keydown', handleKeyDown);
         return () => window.removeEventListener('keydown', handleKeyDown);
-    }, [selectedStickerId, deleteSticker]);
+    }, [batchSelectedStickerIds, selectedStickerId, deleteSticker]);
 
     // 处理图片文件选择
     const handleFileChange = useCallback(async (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -204,7 +355,7 @@ export const ZenShelf: React.FC<ZenShelfProps> = ({ onOpenSettings }) => {
     }, [addSticker, viewportScale]);
 
     // 处理文本输入提交
-    const handleTextSubmit = useCallback((content: string, style?: { color: string; textAlign: 'left' | 'center' | 'right'; fontSize: number }, hasCheckbox?: boolean) => {
+    const handleTextSubmit = useCallback((content: string, style?: { color: string; textAlign: 'left' | 'center' | 'right'; fontSize: number }, hasCheckbox?: boolean, linkCard?: LinkCardMetadata) => {
         if (editingSticker) {
             updateSticker(editingSticker.id, {
                 content,
@@ -214,6 +365,7 @@ export const ZenShelf: React.FC<ZenShelfProps> = ({ onOpenSettings }) => {
                     fontSize: style.fontSize,
                 } : editingSticker.style,
                 hasCheckbox: hasCheckbox !== undefined ? hasCheckbox : editingSticker.hasCheckbox,
+                linkCard,
             });
         } else if (textInputPos) {
             addSticker({
@@ -228,6 +380,7 @@ export const ZenShelf: React.FC<ZenShelfProps> = ({ onOpenSettings }) => {
                 } : undefined,
                 hasCheckbox,
                 isChecked: false,
+                linkCard,
             });
         }
         setTextInputPos(null);
@@ -312,10 +465,15 @@ export const ZenShelf: React.FC<ZenShelfProps> = ({ onOpenSettings }) => {
                         key={sticker.id}
                         sticker={sticker}
                         isSelected={selectedStickerId === sticker.id}
+                        isBatchSelected={batchSelectedStickerIds.includes(sticker.id)}
                         isCreativeMode={isEditMode}
                         onSelect={() => selectSticker(sticker.id)}
+                        onToggleBatchSelect={() => toggleBatchSelect(sticker)}
                         onDelete={() => deleteSticker(sticker.id)}
                         onPositionChange={(x, y) => updateSticker(sticker.id, { x, y })}
+                        onBatchPositionPreview={previewBatchPosition}
+                        onBatchPositionCommit={commitBatchPosition}
+                        onBatchDelete={deleteBatchSelection}
                         onStyleChange={(updates) => {
                             if (sticker.style) {
                                 updateSticker(sticker.id, { style: { ...sticker.style, ...updates } });
@@ -349,6 +507,7 @@ export const ZenShelf: React.FC<ZenShelfProps> = ({ onOpenSettings }) => {
                     initialText={editingSticker?.content || ''}
                     initialStyle={editingSticker?.style}
                     initialHasCheckbox={editingSticker?.hasCheckbox}
+                    initialLinkCard={editingSticker?.linkCard}
                     onSubmit={handleTextSubmit}
                     onCancel={handleTextCancel}
                     viewportScale={viewportScale}
@@ -453,6 +612,7 @@ export const ZenShelf: React.FC<ZenShelfProps> = ({ onOpenSettings }) => {
                                 onOpenSettings?.({ x: contextMenu.x, y: contextMenu.y });
                             }
                         }}
+                        onClearAllStickers={clearAllStickers}
                         isPinned={activeContextMenuSticker?.isPinned}
                         onTogglePin={() => {
                             if (contextMenu.stickerId && activeContextMenuSticker) {

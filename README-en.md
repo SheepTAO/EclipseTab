@@ -11,7 +11,7 @@
 
 English | [简体中文](README.md)
 
-<img width="2940" height="1846" alt="图片" src="https://github.com/user-attachments/assets/19ba09a7-3917-4110-a9f7-10622905a06d" />
+<img width="2940" height="1846" alt="Eclipse Tab Preview" src="https://github.com/user-attachments/assets/19ba09a7-3917-4110-a9f7-10622905a06d" />
 
 **✨ Creative Canvas · 🌐 Multiple Spaces · 🎨 Beautiful & Efficient**
 
@@ -21,84 +21,33 @@ English | [简体中文](README.md)
 
 > 💡 **AI-Powered Development** - This project is 90% developed using AI-assisted coding (VibeCoding)
 
-Eclipse Tab is a powerful browser new tab extension, centered around **Zen Shelf (Creative Canvas)** and **Focus Spaces (Multiple Workspaces)**, transforming your browser into a creative workstation and productivity hub.
+Eclipse Tab transforms your browser's new tab page into a creative workstation, centered around **Zen Shelf (Creative Canvas)** and **Focus Spaces (Multiple Workspaces)**.
 
 <br>
 
-## 📖 Table of Contents
+## 📦 Installation
 
-- [✨ Product Overview](#-product-overview)
-- [📦 Installation & Usage](#-installation--usage)
-- [🎯 Core Features](#-core-features)
-- [💡 Usage Tips](#-usage-tips)
-- [❓ FAQ](#-faq)
-
-<br>
-
-## ✨ Product Overview
-
-Eclipse Tab transforms your browser's new tab page into a powerful workspace:
-
-- ✏️ **Zen Shelf (Creative Canvas)** - Capture inspiration anytime, anywhere with text and image stickers
-- 🌐 **Focus Spaces (Multiple Workspaces)** - Create independent workspaces for different scenarios
-- 🎨 **Beautiful Themes** - Multiple theme modes with custom wallpapers
-
-<br>
-
-## 📦 Installation & Usage
-
-### 🎯 Install from Extension Stores (Recommended)
-
-| Browser | Install Link |
+| Browser | Link |
 |:---|:---|
-| <img src="https://raw.githubusercontent.com/alrra/browser-logos/main/src/chrome/chrome_48x48.png" width="24" /> **Chrome** | [Chrome Web Store](https://chromewebstore.google.com/detail/eclipse-tab/lcnmbgidemidmfffplkpflpdpmfdgabp?utm_source=ext_app_menu) |
-| <img src="https://raw.githubusercontent.com/alrra/browser-logos/main/src/edge/edge_48x48.png" width="24" /> **Edge** | [Edge Add-ons](https://microsoftedge.microsoft.com/addons/detail/eclipse-tab/omlbmhdkajhbcdhjdgjalelbbmjoekfj?hl=zh-cn) |
-| <img src="https://raw.githubusercontent.com/alrra/browser-logos/main/src/firefox/firefox_48x48.png" width="24" /> **Firefox** | [Firefox Add-ons](https://addons.mozilla.org/zh-CN/firefox/addon/eclipse-tab/) |
-
-### 🛠️ Manual Installation
+| <img src="https://raw.githubusercontent.com/alrra/browser-logos/main/src/chrome/chrome_48x48.png" width="20" /> **Chrome** | [Chrome Web Store](https://chromewebstore.google.com/detail/eclipse-tab/lcnmbgidemidmfffplkpflpdpmfdgabp?utm_source=ext_app_menu) |
+| <img src="https://raw.githubusercontent.com/alrra/browser-logos/main/src/edge/edge_48x48.png" width="20" /> **Edge** | [Edge Add-ons](https://microsoftedge.microsoft.com/addons/detail/eclipse-tab/omlbmhdkajhbcdhjdgjalelbbmjoekfj?hl=zh-cn) |
+| <img src="https://raw.githubusercontent.com/alrra/browser-logos/main/src/firefox/firefox_48x48.png" width="20" /> **Firefox** | [Firefox Add-ons](https://addons.mozilla.org/zh-CN/firefox/addon/eclipse-tab/) |
 
 <details>
-<summary>📋 Click to expand manual installation steps</summary>
+<summary>🛠️ Manual Installation / Zen Browser Setup</summary>
 
 <br>
 
-**Chrome / Edge**
-1. Download the project and unzip it
-2. Open `chrome://extensions/` or `edge://extensions/`
-3. Enable "Developer mode"
-4. Click "Load unpacked" and select the `dist` folder
+**Chrome / Edge — Manual Installation**
+1. Download and unzip the project
+2. Open `chrome://extensions/` or `edge://extensions/`, enable "Developer mode"
+3. Click "Load unpacked" and select the `dist` folder
+
+**Zen Browser** (Firefox-based)
+1. Install via Firefox method above, then open `about:config`
+2. Set `zen.urlbar.replace-newtab` to `false`
 
 </details>
-
-### 🦊 Zen Browser Setup
-
-<details>
-<summary>📋 Click to expand Zen Browser configuration steps</summary>
-
-<br>
-
-Zen Browser is based on Firefox and requires additional configuration to use Eclipse Tab properly:
-
-1. Install the extension following the Firefox method above
-2. Open a new tab and enter `about:config` in the address bar
-3. Search for `zen.urlbar.replace-newtab`
-4. Set this option to `false` (disable)
-5. Reopen a new tab to use Eclipse Tab
-
-> 💡 **Tip**: This setting disables Zen Browser's built-in new tab popup, allowing Eclipse Tab to display properly.
-
-</details>
-
-### 🚀 Getting Started
-
-After installation, open a new tab:
-
-```
-1️⃣ Add Apps → Click edit button to add websites
-2️⃣ Create Spaces → Right-click space switcher button to create workspaces
-3️⃣ Capture Ideas → Double-click to add stickers
-4️⃣ Personalize → Set themes and wallpapers
-```
 
 <br>
 
@@ -110,23 +59,27 @@ After installation, open a new tab:
 
 ### ✏️ Zen Shelf - Creative Canvas
 
-> Transform your new tab into a free creative space, like sticky notes and photo walls on your desk for capturing inspiration anytime.
+> A free-form canvas for capturing inspiration — like sticky notes and a photo wall in your browser.
 
-- 📝 **Text Stickers** - Quick idea capture with customizable styles
-- 🖼️ **Image Stickers** - Save inspiration images, freely resize
-- 🎭 **Free Layout** - Drag and arrange, auto-avoids UI elements
+- 📝 **Text Stickers** - Custom font size (12–120px), color, and alignment
+- ☑️ **Checkbox Mode** - Add a checkbox to any sticker; click to toggle completion
+- 🔗 **Link Cards** - Type a URL and click the link button to convert it into a rich card with title and cover image; double-click to open
+- 🖼️ **Image Stickers** - Upload, paste, or drag images (including SVG); freely resize
+- 🎭 **Free Layout** - Drag anywhere; auto-avoids UI elements
+- 📌 **Pin Stickers** - Right-click to pin a sticker and prevent accidental moves
+- 🗑️ **Recycle Bin** - Deleted stickers go to the recycle bin and can be restored anytime
 
 </td>
 <td width="50%" valign="top">
 
 ### 🌐 Focus Spaces - Multiple Workspaces
 
-> Create independent workspaces for different scenarios, achieving true separation of work, study, and entertainment.
+> Independent workspaces for every context — work, study, and entertainment stay separate.
 
-- 🗂️ **Multi-Space Management** - Create, switch, import/export spaces
-- 📋 **Independent App Lists** - Each space has its own apps
-- 🚀 **Long-Press Quick Jump** - Long-press Navigator to pop up space selector, slide to jump directly
-- 💼 **Scenario-Based** - Work, study, entertainment stay separate
+- 🗂️ **Multi-Space Management** - Create, rename, pin, and delete spaces
+- 📋 **Independent App Lists** - Each space has its own Dock apps
+- 🚀 **Long-Press Quick Jump** - Long-press the Navigator to open the space switcher; slide to jump directly
+- 📤 **Import / Export** - Export the current space or all spaces at once
 
 </td>
 </tr>
@@ -138,20 +91,21 @@ After installation, open a new tab:
 > macOS-style app management, elegant and efficient.
 
 - 📌 **Quick Access** - One-click to frequently used sites
-- 📁 **Folder Organization** - Drag to create folders, stay tidy
-- ✨ **Smooth Animations** - Elegant interaction experience
-- 🔍 **Smart Icons** - Auto-fetches high-res icons with intelligent text icon fallback
+- 📁 **Folder Organization** - Drag one app onto another to create a folder; auto-dissolves below 2 apps
+- 🔍 **Smart Icons** - Multi-stage strategy to fetch high-res icons; falls back to generated text icons
+- 📚 **Batch Import** - Import from browser bookmarks, or import AI-generated JSON
 
 </td>
 <td width="50%" valign="top">
 
 ### 🎨 Beautiful Themes
 
-> Personalize your new tab page with multiple theme modes and customization options.
+> Personalize your new tab page.
 
-- 🌈 **Four Modes** - Default, Light, Dark, Auto follows system
-- 🖼️ **Custom Backgrounds** - Gradients, solid colors, upload wallpapers, texture overlays
+- 🌈 **Four Modes** - Default, Light, Dark, Auto (follows system)
+- 🖼️ **Custom Backgrounds** - Gradients, solid colors, uploaded wallpapers, texture overlays
 - 🎯 **Smart Adaptation** - Auto-adjusts text colors for readability
+- 🌐 **Multilingual** - English / 中文 interface
 
 </td>
 </tr>
@@ -160,12 +114,12 @@ After installation, open a new tab:
 
 ### ☁️ Cloud Sync
 
-> Sync data across devices via WebDAV, secure and under your control.
+> Sync across devices via WebDAV — secure, private, and fully under your control.
 
 - 🔄 **Auto Sync** - Detects and syncs automatically when opening a new tab
-- 📦 **Full Backup** - Config, spaces, stickers all in one sync
+- 📦 **Full Backup** - Config, spaces, and stickers all in one sync
 - 🖼️ **Assets Optional** - Wallpapers and sticker images synced on demand (disabled by default)
-- 🆕 **New Device Ready** - Just configure WebDAV and data syncs automatically
+- 🆕 **New Device Ready** - Just configure WebDAV and all data syncs automatically
 
 </td>
 </tr>
@@ -175,110 +129,81 @@ After installation, open a new tab:
 
 ## 💡 Usage Tips
 
-> Here are some easily overlooked features and interactions to help you get the most out of Eclipse Tab.
+### 🎯 Interface
 
-### 🎯 Interface Interactions
+- **Settings**: Hover over the **top-left corner** to reveal the settings icon ⚙️
+- **Edit Dock**: Hover over the **top-right corner** to reveal the edit button ✏️, or right-click any Dock icon to edit / delete it directly
 
-- **Settings Access**: Move your mouse to the **top-left corner** of the page to reveal the settings icon ⚙️
-- **Edit Mode**: Move your mouse to the **top-right corner** of the page to reveal the edit button ✏️ for managing Dock apps
+### ✏️ Zen Shelf
 
-### ✏️ Zen Shelf Tips
+| Action | Description |
+|:---|:---|
+| Double-click blank area | Quickly create a text sticker |
+| Double-click a text sticker | Edit its content |
+| `Ctrl+V` | Paste clipboard image as an image sticker |
+| `Shift` + click sticker | Multi-select text stickers; drag together or press `Delete` to batch-delete |
+| Drag to screen edge | Drop sticker onto the recycle bin icon to delete |
+| Type a URL → click link button | Convert plain URL text into a rich link card |
+| Toolbar +/- or `Ctrl+↑↓` | Adjust font size; hold `Shift` for larger steps |
+| `Ctrl+1`~`7` | Quick-switch sticker color |
+| Right-click sticker | Edit, copy, export, pin, delete, and more |
+| Right-click background | Add sticker, upload image, toggle edit mode, open settings, clear all stickers |
+| Recycle bin sidebar | Swipe left to restore, swipe right to permanently delete |
+| `[text](url)` in sticker content | Renders as a clickable hyperlink |
 
-- **Double-Click to Create**: Double-click on empty space to quickly create a text sticker
-- **Paste Images**: Use `Ctrl+V` to directly paste images from clipboard
-- **Double-Click to Edit**: Double-click a text sticker to edit its content
-- **Export as Image**: Text stickers can be exported as images for sharing
-- **Auto Bring to Top**: Clicking a sticker automatically brings it to the front
-- **Recycle Bin**: Restore or clear deleted stickers from the bin at the screen edge
+### 🚀 Dock
 
-### 🚀 Dock Tips
+- **Right-click icon**: Edit or delete directly without entering edit mode
+- **Refresh Icons**: In Settings → "Refresh Icons" to force re-fetch icons for the current space — useful for missing or outdated icons
+- **Batch Import**: In edit mode, click "+" → "Batch Import" to add apps from bookmarks or import an AI-generated JSON file
 
-- **Edit Mode Access**: Click the edit button in the top-right corner, long-press a Dock icon, or use the right-click menu to enter edit mode
-- **Create Folders**: Drag one app onto another to automatically create a folder
-- **Auto Dissolve**: Folders with less than 2 apps automatically dissolve
+### 🌐 Focus Spaces
 
-### 🌐 Focus Spaces Tips
+- **Cycle through**: Click the space switcher button on the far right of the Dock
+- **Quick jump**: Long-press the switcher (0.2s) to open the selector, then slide to your target space and release
+- **Space management**: Right-click the switcher → pin, rename, delete, import / export (including export all spaces)
 
-- **Cycle Through**: Click the space switcher button on the far right of the Dock to cycle through different spaces
-- **Quick Jump**: Long-press the space switcher button (0.2s) to pop up all other spaces as selectable blocks. Hold and slide up to your target space, then release to jump directly — no need to cycle through one by one
-- **Space Management**: Right-click the space switcher button on the far right of the Dock to pin spaces, rename spaces, delete spaces, or import/export space configurations
+### ☁️ Cloud Sync
 
-### ☁️ Cloud Sync Tips
-
-- **Configure WebDAV**: Enter server URL and credentials in the sync panel
-- **Auto Sync**: When enabled, new tabs automatically check for cloud updates and upload local changes
-- **Image Sync**: Wallpapers and sticker images are disabled by default, enable in sync settings
-- **Multi-Device**: Configure the same WebDAV on multiple devices, data stays in sync automatically
+- Enter your WebDAV server URL and credentials in the sync panel; enable auto-sync to check for updates on every new tab
+- Wallpapers and sticker images are not synced by default — enable them in the sync panel as needed
 
 ---
 
 ## ❓ FAQ
 
-### 🔒 Data & Privacy
-
 **Where is data stored?**
-- All data is stored locally in your browser using `localStorage` and `IndexedDB`
-- No data is uploaded to any cloud servers
-- Your data is completely yours, we cannot access it
+All data is stored locally in your browser (`localStorage` + `IndexedDB`). Nothing is uploaded to any server.
 
-**Is user data uploaded?**
-- No. Eclipse Tab does not collect or upload any user data
-- All features run entirely locally, ensuring your privacy and security
+**How do I back up my data?**
+- **Full backup**: Settings → Export Backup → save the `.zip` file
+- **Space config**: Right-click space switcher → Export Space (or Export All Spaces) → save JSON
 
-**What happens to data after uninstalling the extension?**
-- After uninstalling, the browser will clear all extension data
-- We recommend exporting space configurations and important sticker content before uninstalling
-
-### 💾 Backup & Restore
-
-**How to backup data?**
-- **Full Backup**: Open the top-left settings panel → Select "Export Backup" → Save the `.zip` file
-- **Space Configurations**: Right-click the space switcher button on the far right of the Dock → Select "Export Space" → Save JSON file
-
-**How to restore data?**
-- **Full Restore**: Open the top-left settings panel → Select "Import Backup" → Choose the exported `.zip` file
-- **Space Configurations**: Right-click the space switcher button on the far right of the Dock → Select "Import Space" → Choose previously exported JSON file
+**How do I restore data?**
+- **Full restore**: Settings → Import Backup → select the `.zip` file
+- **Space config**: Right-click space switcher → Import Space → select JSON file
 
 **What's the difference between cloud sync and local backup?**
-- **Export/Import Backup**: Creates a local `.zip` file for manual backup, migration, and restore
-- **WebDAV Cloud Sync**: Syncs your configuration across devices through your own WebDAV service, with wallpapers and sticker images available as optional assets
+- **Local backup**: Creates a `.zip` file — great for manual migration and restore
+- **WebDAV sync**: Syncs across devices via your own WebDAV service; wallpapers and sticker images are optional
 
 ---
 
-## 📝 About the Project
+## 📝 About
 
-Eclipse Tab is a browser extension project built with modern web technologies, with 90% of the code completed through AI-assisted coding (VibeCoding).
+Eclipse Tab is built with modern web technologies, with 90% of the code completed through AI-assisted coding (VibeCoding).
 
-Special thanks to [@SheepTAO](https://github.com/SheepTAO) for contributing the WebDAV cloud sync feature, making it possible to sync Eclipse Tab configuration and assets across devices.
+Special thanks to [@SheepTAO](https://github.com/SheepTAO) for contributing the WebDAV cloud sync feature, and [@lycohana](https://github.com/lycohana) for contributing the text sticker hyperlink parsing logic.
 
-**Tech Stack & Architecture**
-- **React 18 + TypeScript + Vite**
-- **Feature-based Architecture**: Modular design (Dock, Shelf, Spaces, Theme, etc.)
-- **UI Styling**: CSS Modules combined with native CSS variables for dynamic theming
+**Tech Stack**: React 18 + TypeScript + Vite · CSS Modules · Feature-based architecture
 
-**⚡ Performance & UX Optimizations**
-- **Smart Rendering**: Fine-grained Context hooks, lazy loading for non-core components, and RAF (RequestAnimationFrame) throttling
-- **Smart Icon Engine**: Multi-level caching (Memory + IndexedDB), request deduplication, and multi-stage fetching (high-priority local strategies with API fallbacks)
-- **Native-level Optimizations**: Asynchronous Web Worker image compression, SVG filters for perfect text sticker strokes
-- **Adaptive Layout**: Zen Shelf utilizes Viewport Scaling for responsive sticker layouts
-
-**Data Storage**
-- Follows a strictly Local-First data strategy
-- Hybrid storage using localStorage and IndexedDB
-- Supports large-capacity storage for wallpapers and image stickers (breaks the traditional 5MB extension limit)
+**Performance highlights**: Multi-level icon caching (Memory + IndexedDB), concurrent request deduplication, RAF-throttled rendering, Web Worker image compression, viewport-scaling responsive layout
 
 ---
 
 ## 🙏 Acknowledgments
 
-Thanks to all users who use and support Eclipse Tab!
-
-If you like this project, feel free to:
-- ⭐ Star this project
-- 🐛 Submit Issues to report problems
-- 💡 Share your user experience
-
----
+Thanks to everyone using and supporting Eclipse Tab! Feel free to ⭐ Star the project, submit Issues, or share your experience.
 
 ## 📄 License
 
