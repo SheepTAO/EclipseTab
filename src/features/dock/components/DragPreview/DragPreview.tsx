@@ -53,6 +53,9 @@ export const DragPreview: React.FC<DragPreviewProps> = ({
         return null;
     }
 
+    // 超椭圆圆角：支持 corner-shape 的浏览器放大 1.5 倍，不支持则使用原始值
+    const borderRadius = CSS.supports('corner-shape: superellipse(1.5)') ? '24px' : '16px';
+
     // 计算 scale 变换
     const getScale = (): string => {
         if (isPreMerge) return 'scale(0.6)';
@@ -117,7 +120,7 @@ export const DragPreview: React.FC<DragPreviewProps> = ({
                 zIndex: DRAG_Z_INDEX,
                 transform: getScale(),
                 boxShadow: getShadow(),
-                borderRadius: '16px', // 确保阴影贴合圆角 (假设图标是圆角矩形)
+                borderRadius,
                 transition: getTransition(),
             }}
             onTransitionEnd={handleTransitionEnd}

@@ -680,7 +680,7 @@ const StickerItemComponent: React.FC<StickerItemProps> = ({
                 onDoubleClick={handleDoubleClick}
             >
                 {sticker.type === 'text' ? (
-                    <div className={sticker.hasCheckbox ? styles.textStickerContainer : ''}>
+                    <div className={[sticker.hasCheckbox ? styles.textStickerContainer : '', sticker.linkCard ? styles.hasLinkCard : ''].filter(Boolean).join(' ')}>
                         {sticker.hasCheckbox && (
                             <button
                                 className={`${styles.textStickerCheckbox} ${sticker.isChecked ? styles.textStickerCheckboxChecked : ''}`}

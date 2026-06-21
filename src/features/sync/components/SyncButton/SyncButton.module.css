@@ -19,6 +19,11 @@
     transform: scale(1.05);
 }
 
+.syncBtn:active {
+    transform: scale(0.97);
+    transition: transform var(--transition-instant);
+}
+
 .innerContainer {
     background: var(--color-bg-secondary);
     border-radius: var(--radius-default-in);

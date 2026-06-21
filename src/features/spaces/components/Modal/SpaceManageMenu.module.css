@@ -71,12 +71,13 @@
 }
 
 .menuItem:hover {
-    opacity: 0.8;
     background: var(--color-bg-secondary);
 }
 
 .menuItem:active {
     background: var(--color-bg-tertiary);
+    transform: scale(0.99);
+    transition: background var(--transition-instant), transform var(--transition-instant);
 }
 
 /* 危险操作 (删除) */
@@ -198,9 +199,18 @@
 
 .confirmButton:active {
     background: var(--color-bg-primary);
+    transform: scale(0.98);
+    transition: background var(--transition-instant), transform var(--transition-instant);
 }
 
 .confirmButton:disabled {
     opacity: 0.4;
     cursor: not-allowed;
+}
+
+/* @supports: superellipse(1.5) 浏览器使用放大圆角 */
+@supports (corner-shape: superellipse(1.5)) {
+  .menuItem {
+    border-radius: 12px;
+  }
 }

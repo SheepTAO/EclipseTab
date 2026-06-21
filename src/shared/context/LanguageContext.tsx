@@ -131,6 +131,7 @@ interface Translations {
         lastSync: string;
         autoSyncTitle: string;
         neverSynced: string;
+        localBackup: string;
     };
     dock: {
         emptyHint: string;
@@ -280,6 +281,7 @@ const translations: Record<Language, Translations> = {
             lastSync: 'Last sync',
             autoSyncTitle: 'Auto Sync',
             neverSynced: 'Never',
+            localBackup: 'Local Backup',
         },
         textInput: {
             placeholder: 'Enter text...',
@@ -424,6 +426,7 @@ const translations: Record<Language, Translations> = {
             lastSync: '上次同步',
             autoSyncTitle: '自动同步',
             neverSynced: '从未',
+            localBackup: '本地备份',
         },
         textInput: {
             placeholder: '输入文本...',

@@ -81,12 +81,13 @@
 }
 
 .menuItem:hover {
-    opacity: 0.8;
     background: var(--color-bg-secondary);
 }
 
 .menuItem:active {
     background: var(--color-bg-tertiary);
+    transform: scale(0.99);
+    transition: background var(--transition-instant), transform var(--transition-instant);
 }
 
 /* 危险操作 (删除) */

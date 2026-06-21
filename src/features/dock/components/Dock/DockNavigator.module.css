@@ -17,7 +17,7 @@
     backdrop-filter: blur(20px);
     -webkit-backdrop-filter: blur(20px);
     border: 1px solid var(--color-border);
-    border-radius: var(--icon-border-radius, 16px);
+    border-radius: var(--icon-border-radius, 24px);
 
     /* 交互 */
     cursor: pointer;
@@ -79,4 +79,11 @@
     height: 5px;
     border-radius: 3px;
     background: var(--color-text-primary);
+}
+
+/* @supports: superellipse(1.5) 浏览器使用放大圆角 */
+@supports (corner-shape: superellipse(1.5)) {
+  .dot.dotActive {
+    border-radius: 4.5px;
+  }
 }

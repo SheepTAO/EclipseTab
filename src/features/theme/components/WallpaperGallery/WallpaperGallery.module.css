@@ -26,6 +26,12 @@
     filter: brightness(1.05);
 }
 
+.uploadBtn:active {
+    filter: brightness(0.95);
+    transform: scale(0.97);
+    transition: filter var(--transition-instant), transform var(--transition-instant);
+}
+
 .uploading {
     opacity: 0.7;
     pointer-events: none;
@@ -46,6 +52,12 @@
 
 .thumbnail:hover {
     filter: brightness(1.05);
+}
+
+.thumbnail:active {
+    filter: brightness(0.95);
+    transform: scale(0.97);
+    transition: filter var(--transition-instant), transform var(--transition-instant);
 }
 
 .active {
@@ -109,4 +121,17 @@
     100% {
         opacity: 0.7;
     }
+}
+
+/* @supports: superellipse(1.5) 浏览器使用放大圆角 */
+@supports (corner-shape: superellipse(1.5)) {
+  .gridContainer {
+    border-radius: 12px;
+  }
+  .uploadBtn {
+    border-radius: 6px;
+  }
+  .thumbnail {
+    border-radius: 6px;
+  }
 }

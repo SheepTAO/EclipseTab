@@ -28,6 +28,19 @@
     margin-bottom: 8px;
 }
 
+.sectionHeader {
+    display: flex;
+    align-items: center;
+    margin-bottom: 4px;
+}
+
+.sectionTitle {
+    font-family: var(--font-family);
+    font-size: var(--font-size-small);
+    font-weight: var(--font-weight-medium);
+    color: var(--color-text-secondary);
+}
+
 .iconWrapper {
     background: var(--color-bg-secondary);
     box-shadow: var(--shadow-small);
@@ -81,7 +94,7 @@
     flex: 1;
     background: var(--color-bg-primary);
     border: 1px solid var(--color-bg-primary);
-    border-radius: 6px;
+    border-radius: 4px;
     height: 28px;
     padding: 0 8px;
     font-family: var(--font-family);
@@ -150,7 +163,7 @@
 .btnBase {
     background: var(--color-bg-primary);
     border: 1px solid var(--color-border);
-    border-radius: 6px;
+    border-radius: 4px;
     height: 28px;
     padding: 0 12px;
     font-family: var(--font-family);
@@ -172,9 +185,10 @@
 }
 
 .btnBase:active {
-    background: var(--blue-500);
-    border-color: var(--blue-500);
-    color: var(--white);
+    background: var(--color-bg-tertiary);
+    color: var(--color-text-primary);
+    transform: scale(0.98);
+    transition: background var(--transition-instant), transform var(--transition-instant);
 }
 
 .btnBase:disabled {
@@ -295,4 +309,23 @@
 .toggleActive .toggleKnob {
     left: 18px;
     background: var(--color-text-primary);
+}
+
+/* @supports: superellipse(1.5) 浏览器使用放大圆角 */
+@supports (corner-shape: superellipse(1.5)) {
+  .cardSection {
+    border-radius: 12px;
+  }
+  .iconWrapper {
+    border-radius: 12px;
+  }
+  .inputField {
+    border-radius: 6px;
+  }
+  .btnBase {
+    border-radius: 6px;
+  }
+  .toggle {
+    border-radius: 15px;
+  }
 }

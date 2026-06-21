@@ -8,6 +8,7 @@ interface PopoverPanelProps {
     anchorPosition: { x: number; y: number };
     children: React.ReactNode;
     width?: number;
+    sideContent?: React.ReactNode;
 }
 
 /**
@@ -25,6 +26,7 @@ export const PopoverPanel: React.FC<PopoverPanelProps> = ({
     anchorPosition,
     children,
     width = 264,
+    sideContent,
 }) => {
     const [isVisible, setIsVisible] = useState(isOpen);
     const modalRef = useRef<HTMLDivElement>(null);
@@ -86,6 +88,11 @@ export const PopoverPanel: React.FC<PopoverPanelProps> = ({
                 <div className={styles.innerContainer} style={innerStyle}>
                     {children}
                 </div>
+                {sideContent && (
+                    <div className={styles.innerContainer} style={innerStyle}>
+                        {sideContent}
+                    </div>
+                )}
             </div>
         </>
     );

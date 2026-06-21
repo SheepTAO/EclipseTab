@@ -165,6 +165,13 @@
   background: var(--color-bg-tertiary);
 }
 
+/* 操作按钮按下效果 */
+.actionButton:active {
+  background: var(--color-bg-tertiary);
+  transform: scale(0.98);
+  transition: background var(--transition-instant), transform var(--transition-instant);
+}
+
 /* 操作按钮禁用状态 */
 .actionButton:disabled {
   opacity: 0.5;
@@ -191,7 +198,11 @@
   align-items: center;
   justify-content: center;
   gap: 6px;
-  transition: all var(--transition-medium);
+  /* 只过渡需要的属性，避免 transition:all 引发意外 */
+  transition: background var(--transition-medium),
+              filter var(--transition-medium),
+              transform var(--transition-medium),
+              color var(--transition-medium);
 }
 
 /* 取消按钮 */
@@ -205,18 +216,32 @@
   background: var(--color-bg-tertiary);
 }
 
-/* 添加按钮 */
-.addButton {
-  background: var(--color-bg-white);
-  color: var(--color-text-tertiary);
-}
-
-/* 添加按钮悬停效果 */
-.addButton:hover {
+/* 取消按钮按下效果 */
+.cancelButton:active {
   background: var(--color-bg-tertiary);
+  transform: scale(0.98);
+  transition: background var(--transition-instant), transform var(--transition-instant);
 }
 
-/* 添加按钮禁用状态 */
+/* 添加按钮 - 蓝色主要操作，与取消按钮形成清晰视觉层级 */
+.addButton {
+  background: var(--blue-500);
+  color: var(--white);
+}
+
+/* Hover：提亮蓝色 */
+.addButton:hover {
+  filter: brightness(1.1);
+}
+
+/* Active：即时压暗 + 微缩，按下感清晰 */
+.addButton:active {
+  filter: brightness(0.88);
+  transform: scale(0.98);
+  transition: filter var(--transition-instant), transform var(--transition-instant);
+}
+
+/* 禁用状态 */
 .addButton:disabled {
   opacity: 0.5;
   cursor: not-allowed;
@@ -268,4 +293,26 @@
 .batchCard svg {
   flex-shrink: 0;
   opacity: 0.7;
+}
+
+/* @supports: superellipse(1.5) 浏览器使用放大圆角 */
+@supports (corner-shape: superellipse(1.5)) {
+  .container {
+    border-radius: 24px;
+  }
+  .input {
+    border-radius: 12px;
+  }
+  .iconPreview {
+    border-radius: 18px;
+  }
+  .actionButton {
+    border-radius: 12px;
+  }
+  .footerButton {
+    border-radius: 12px;
+  }
+  .batchCard {
+    border-radius: 12px;
+  }
 }

@@ -50,3 +50,10 @@
         transform: translateX(-50%) translateY(4px);
     }
 }
+
+/* @supports: superellipse(1.5) 浏览器使用放大圆角 */
+@supports (corner-shape: superellipse(1.5)) {
+  .tooltipContainer {
+    border-radius: 12px;
+  }
+}

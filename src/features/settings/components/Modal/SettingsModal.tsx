@@ -21,7 +21,6 @@ import { FAVICON_PREFIX, getDomainFromRef } from '@/features/dock/utils/iconCach
 import { normalizeUrl } from '@/shared/utils/url';
 import { db } from '@/shared/utils/db';
 import { DockItem } from '@/shared/types';
-import { exportFullBackup, importFullBackup } from '@/shared/utils/backup';
 
 
 interface SettingsModalProps {
@@ -153,8 +152,6 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({ isOpen, onClose, a
     const modalRef = useRef<HTMLDivElement>(null);
     const isClosingRef = useRef(false);
     const [isFixingIcons, setIsFixingIcons] = useState(false);
-    const [isBackupBusy, setIsBackupBusy] = useState(false);
-    const backupInputRef = useRef<HTMLInputElement>(null);
 
     // 确定我们是处于“默认”模式还是“浅色/深色”模式的逻辑
     const isDefaultTheme = theme === 'default' && !followSystem;
@@ -277,37 +274,6 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({ isOpen, onClose, a
             updateSpaceApps(targetSpaceId, updatedApps);
         } finally {
             setIsFixingIcons(false);
-        }
-    };
-
-    const handleExportBackup = async () => {
-        if (isBackupBusy) return;
-        setIsBackupBusy(true);
-        try {
-            await exportFullBackup();
-        } catch (error) {
-            console.error('Backup failed:', error);
-            window.alert(t.settings.backupFailed);
-        } finally {
-            setIsBackupBusy(false);
-        }
-    };
-
-    const handleImportBackup = async (event: React.ChangeEvent<HTMLInputElement>) => {
-        const file = event.target.files?.[0];
-        event.target.value = '';
-        if (!file) return;
-        if (!window.confirm(t.settings.importBackupConfirm)) return;
-
-        setIsBackupBusy(true);
-        try {
-            await importFullBackup(file);
-            window.location.reload();
-        } catch (error) {
-            console.error('Restore failed:', error);
-            window.alert(t.settings.restoreFailed);
-        } finally {
-            setIsBackupBusy(false);
         }
     };
 
@@ -613,33 +579,6 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({ isOpen, onClose, a
                             >
                                 {isFixingIcons ? '...' : t.settings.fixIcons}
                             </button>
-                        </div>
-
-                        {/* 完整备份 / 恢复 */}
-                        <div className={styles.layoutRow}>
-                            <div className={styles.backupButtons}>
-                                <button
-                                    className={`${styles.layoutToggleOption} ${styles.fixButton}`}
-                                    onClick={handleExportBackup}
-                                    disabled={isBackupBusy}
-                                >
-                                    {isBackupBusy ? '...' : t.settings.exportBackup}
-                                </button>
-                                <button
-                                    className={`${styles.layoutToggleOption} ${styles.fixButton}`}
-                                    onClick={() => backupInputRef.current?.click()}
-                                    disabled={isBackupBusy}
-                                >
-                                    {t.settings.importBackup}
-                                </button>
-                            </div>
-                            <input
-                                ref={backupInputRef}
-                                type="file"
-                                accept=".zip,application/zip"
-                                onChange={handleImportBackup}
-                                style={{ display: 'none' }}
-                            />
                         </div>
                     </div>
 

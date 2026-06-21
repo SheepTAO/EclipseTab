@@ -245,3 +245,10 @@
     line-height: 1.4;
     user-select: none;
 }
+
+/* @supports: superellipse(1.5) 浏览器使用放大圆角 */
+@supports (corner-shape: superellipse(1.5)) {
+  .dock {
+    border-radius: 37.5px;
+  }
+}

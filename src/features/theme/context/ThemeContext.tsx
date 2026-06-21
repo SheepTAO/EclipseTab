@@ -441,8 +441,15 @@ export const ThemeProvider: React.FC<{ children: React.ReactNode }> = ({ childre
 
         // 设置图标大小 CSS 变量
         root.style.setProperty('--icon-size', iconSize === 'small' ? '52px' : '64px');
-        // 动态调整图标圆角
-        root.style.setProperty('--icon-border-radius', iconSize === 'small' ? '12px' : '16px');
+        // 动态调整图标圆角：支持超椭圆曲线的浏览器放大 1.5 倍
+        // 不支持 corner-shape 的浏览器（Firefox/Safari）使用原始值回退
+        const supportsSuperellipse = CSS.supports('corner-shape: superellipse(1.5)');
+        root.style.setProperty(
+            '--icon-border-radius',
+            iconSize === 'small'
+                ? (supportsSuperellipse ? '18px' : '12px')
+                : (supportsSuperellipse ? '24px' : '16px')
+        );
     }, [backgroundValue, backgroundBaseValue, backgroundBlendMode, isDefaultTheme, iconSize, texture, wallpaper]);
 
     // ========================================================================

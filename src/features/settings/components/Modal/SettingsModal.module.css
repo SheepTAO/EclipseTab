@@ -66,6 +66,13 @@
     filter: brightness(1.05);
 }
 
+/* 默认主题按钮按下效果 */
+.defaultTheme:active {
+    filter: brightness(0.95);
+    transform: scale(0.98);
+    transition: filter var(--transition-instant), transform var(--transition-instant);
+}
+
 /* 默认主题激活状态 */
 .defaultThemeActive {
     border-color: var(--blue-500);
@@ -180,7 +187,14 @@
 /* 纹理选项悬停效果 */
 .textureOption:hover {
     background: var(--color-bg-primary);
+    filter: brightness(1.05);
+}
+
+/* 纹理选项按下效果 */
+.textureOption:active {
     filter: brightness(0.95);
+    transform: scale(0.97);
+    transition: filter var(--transition-instant), transform var(--transition-instant);
 }
 
 /* 纹理选项激活状态 */
@@ -244,6 +258,13 @@
 /* 颜色选项悬停效果 */
 .colorOption:hover {
     filter: brightness(1.05);
+}
+
+/* 颜色选项按下效果 */
+.colorOption:active {
+    filter: brightness(0.95);
+    transform: scale(0.97);
+    transition: filter var(--transition-instant), transform var(--transition-instant);
 }
 
 /* 颜色选项激活状态 */
@@ -326,7 +347,7 @@
     align-items: center;
     position: relative;
     background: var(--color-bg-primary);
-    border-radius: 6px;
+    border-radius: 8px;
     border: 2px solid var(--color-bg-primary);
     width: 130px;
     height: 28px;
@@ -343,7 +364,7 @@
     bottom: 0;
     width: 50%;
     background: var(--color-bg-tertiary);
-    border-radius: 4px;
+    border-radius: 6px;
     transition: transform var(--transition-smooth);
     z-index: 0;
 }
@@ -353,7 +374,7 @@
     flex: 1;
     background: transparent;
     border: none;
-    border-radius: 4px;
+    border-radius: 6px;
     height: 100%;
     display: flex;
     align-items: center;
@@ -370,7 +391,6 @@
     line-height: 1;
 }
 
-/* 布局选项悬停效果 */
 .layoutToggleOption:hover {
     color: var(--color-text-primary);
 }
@@ -381,13 +401,23 @@
     padding: 0 12px;
     height: 28px;
     width: 100%;
-    border-radius: 6px;
+    border-radius: 4px;
     color: var(--color-text-secondary);
+    /* 覆盖 layoutToggleOption 的 transition，补上 background 过渡 */
+    transition: background var(--transition-medium),
+                color var(--transition-medium),
+                transform var(--transition-instant);
 }
 
 .fixButton:hover {
     background: var(--color-bg-tertiary);
     color: var(--color-text-primary);
+}
+
+.fixButton:active {
+    background: var(--color-bg-tertiary);
+    transform: scale(0.98);
+    transition: background var(--transition-instant), transform var(--transition-instant);
 }
 
 .backupButtons {
@@ -423,4 +453,53 @@
     text-decoration: underline;
     /* Optional: add underline on hover for clarity */
     background: transparent;
+}
+
+/* @supports: superellipse(1.5) 浏览器使用放大圆角 */
+@supports (corner-shape: superellipse(1.5)) {
+  .modal {
+    border-radius: 24px;
+  }
+  .innerContainer {
+    border-radius: 18px;
+  }
+  .themeGroupContainer {
+    border-radius: 12px;
+  }
+  .highlightBackground {
+    border-radius: 6px;
+  }
+  .themeGroupOption {
+    border-radius: 6px;
+  }
+  .textureSection {
+    border-radius: 12px;
+  }
+  .textureOption {
+    border-radius: 6px;
+  }
+  .texturePreviewPattern {
+    border-radius: 3px;
+  }
+  .colorOptionsContainer {
+    border-radius: 12px;
+  }
+  .colorOption {
+    border-radius: 6px;
+  }
+  .layoutSection {
+    border-radius: 12px;
+  }
+  .layoutToggleGroup {
+    border-radius: 12px;
+  }
+  .layoutHighlight {
+    border-radius: 10px;
+  }
+  .layoutToggleOption {
+    border-radius: 10px;
+  }
+  .fixButton {
+    border-radius: 6px;
+  }
 }

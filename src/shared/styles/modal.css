@@ -45,7 +45,7 @@
 .optionButton {
     background: var(--color-bg-secondary);
     border: 2px solid transparent;
-    border-radius: 4px;
+    border-radius: 6px;
     cursor: pointer;
     transition: all var(--transition-medium);
 }
@@ -59,6 +59,204 @@
 .optionButtonActive {
     border-color: var(--blue-500);
     box-shadow: 0 0 0 1px var(--black-alpha-10);
+}
+
+/* ===== 统一按钮系统 ===== */
+/*
+ * 七类按钮基础样式，可在各 module.css 中直接复用变量规范：
+ *
+ * 1. Ghost 菜单项   → .btn-menu-item 规范
+ * 2. Surface 操作   → .btn-action 规范
+ * 3. 取消按钮       → .btn-cancel 规范
+ * 4. 确认/主要按钮  → .btn-primary 规范
+ * 5. 选项卡/Toggle  → .btn-toggle 规范
+ * 6. Option Card    → .btn-option-card 规范（复用 optionButton）
+ * 7. Globe 图标按钮 → .btn-globe 规范
+ */
+
+/* --- 1. Ghost 菜单项 --- */
+/* 用于右键菜单、下拉选项列表 */
+.menuItem {
+    background: none;
+    border: none;
+    border-radius: var(--radius-small);
+    padding: var(--spacing-padding-small);
+    font-family: var(--font-family);
+    font-weight: var(--font-weight-medium);
+    font-size: var(--font-size-medium);
+    line-height: var(--line-height-none);
+    color: var(--color-text-primary);
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-gap-small);
+    text-align: left;
+    white-space: nowrap;
+    opacity: 1;
+    margin: 0;
+    transition: background var(--transition-medium);
+}
+
+.menuItem:hover {
+    background: var(--color-bg-secondary);
+}
+
+.menuItem:active {
+    background: var(--color-bg-tertiary);
+    transform: scale(0.99);
+    transition: background var(--transition-instant), transform var(--transition-instant);
+}
+
+.menuItem.danger {
+    color: var(--red-400);
+}
+
+.menuItem.danger:hover {
+    background: rgba(255, 107, 107, 0.1);
+}
+
+.menuItem:disabled,
+.menuItem.disabled {
+    opacity: 0.4;
+    cursor: not-allowed;
+    pointer-events: none;
+}
+
+/* --- 2. Surface 操作按钮 --- */
+/* 用于模态框内的次要操作（重置图标、从书签导入等） */
+.actionBtn {
+    background: var(--color-bg-secondary);
+    border: none;
+    border-radius: var(--radius-small);
+    color: var(--color-text-primary);
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    font-family: var(--font-family);
+    font-weight: var(--font-weight-medium);
+    transition: background var(--transition-medium), transform var(--transition-instant);
+}
+
+.actionBtn:hover {
+    background: var(--color-bg-tertiary);
+}
+
+.actionBtn:active {
+    background: var(--color-bg-tertiary);
+    transform: scale(0.98);
+}
+
+.actionBtn:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
+/* --- 3. 取消按钮 --- */
+/* 用于模态框底部的次要操作 */
+.cancelBtn {
+    background: var(--color-bg-secondary);
+    border: none;
+    border-radius: var(--radius-small);
+    color: var(--color-text-primary);
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: var(--font-family);
+    font-weight: var(--font-weight-medium);
+    transition: background var(--transition-medium), transform var(--transition-instant);
+}
+
+.cancelBtn:hover {
+    background: var(--color-bg-tertiary);
+}
+
+.cancelBtn:active {
+    background: var(--color-bg-tertiary);
+    transform: scale(0.98);
+    transition: background var(--transition-instant), transform var(--transition-instant);
+}
+
+/* --- 4. 主要/确认按钮 --- */
+/* 用于模态框底部的主要操作，蓝色标识主要动作 */
+.primaryBtn {
+    background: var(--blue-500);
+    border: none;
+    border-radius: var(--radius-small);
+    color: var(--white);
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: var(--font-family);
+    font-weight: var(--font-weight-medium);
+    /* 分离 hover（平滑）与 active（即时）的过渡时长 */
+    transition: filter var(--transition-medium), transform var(--transition-medium);
+}
+
+/* Hover：轻微提亮蓝色，保持色调 */
+.primaryBtn:hover {
+    filter: brightness(1.1);
+}
+
+/* Active：即时压暗 + 微缩，给予清晰的按下反馈 */
+.primaryBtn:active {
+    filter: brightness(0.88);
+    transform: scale(0.98);
+    transition: filter var(--transition-instant), transform var(--transition-instant);
+}
+
+.primaryBtn:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
+/* --- 5. 选项卡/Toggle 按钮 --- */
+/* 用于分段控制器内的选项（Light/Dark/Auto 等） */
+.toggleOption {
+    background: transparent;
+    border: none;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: var(--font-family);
+    font-weight: var(--font-weight-medium);
+    color: var(--color-text-secondary);
+    transition: color var(--transition-fast);
+}
+
+.toggleOption:hover {
+    color: var(--color-text-primary);
+}
+
+/* 选中态由外部滑动 highlightBackground 承担视觉反馈 */
+.toggleOptionSelected {
+    color: var(--color-text-primary);
+}
+
+/* --- 7. Globe 图标按钮 --- */
+/* 用于 addIcon、closeButton、syncBtn 等独立功能触发按钮 */
+.globeBtn {
+    backdrop-filter: blur(40px);
+    -webkit-backdrop-filter: blur(40px);
+    background: var(--color-bg-primary);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-default);
+    cursor: pointer;
+    transition: transform var(--transition-normal), box-shadow var(--transition-normal);
+}
+
+.globeBtn:hover {
+    transform: scale(1.05);
+    box-shadow: var(--shadow-medium);
+}
+
+.globeBtn:active {
+    transform: scale(0.97);
+    transition: transform var(--transition-instant);
 }
 
 /* ===== 网格布局 ===== */

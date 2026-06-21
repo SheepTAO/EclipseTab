@@ -12,18 +12,23 @@
     justify-content: center;
     cursor: pointer;
     transition: transform var(--transition-medium),
-        opacity var(--transition-medium),
         box-shadow var(--transition-medium),
         width 0.3s cubic-bezier(0.4, 0, 0.2, 1),
         height 0.3s cubic-bezier(0.4, 0, 0.2, 1);
     box-shadow: var(--shadow-small);
 }
 
-/* 悬停效果 - 向上举起 */
+/* 悬停效果 - 轻微放大 */
 .addIcon:hover {
-    transform: translateY(-4px);
-    opacity: 0.95;
+    transform: scale(1.05);
     box-shadow: var(--shadow-medium);
+}
+
+/* 按下效果 - 即时缩小，给予清晰按下反馈 */
+.addIcon:active {
+    transform: scale(0.97);
+    box-shadow: var(--shadow-small);
+    transition: transform var(--transition-instant), box-shadow var(--transition-instant);
 }
 
 /* 加号图标 */

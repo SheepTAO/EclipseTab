@@ -71,7 +71,16 @@
 
 /* 选项悬停状态 */
 .option:hover {
-  opacity: 0.8;
+  background: var(--color-bg-secondary);
+  border-radius: var(--radius-small);
+}
+
+/* 选项按下状态 */
+.option:active {
+  background: var(--color-bg-tertiary);
+  border-radius: var(--radius-small);
+  transform: scale(0.99);
+  transition: background var(--transition-instant), transform var(--transition-instant);
 }
 
 /* 选中的选项 - 带下划线 */

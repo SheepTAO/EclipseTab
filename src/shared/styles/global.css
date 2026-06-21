@@ -19,3 +19,24 @@ html {
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
+
+/* ===== 超椭圆圆角渐进增强 ===== */
+/* 支持 corner-shape 的浏览器使用 superellipse(1.5) 超椭圆曲线 */
+/* k=1.5 介于普通圆角和 Apple squircle (k=2) 之间，视觉更圆润 */
+/* 不支持的浏览器回退到原生 border-radius 表现 */
+@supports (corner-shape: superellipse(1.5)) {
+  *,
+  *::before,
+  *::after {
+    corner-shape: superellipse(1.5);
+  }
+
+  :root {
+    --radius-default: 24px;
+    --radius-default-in: 18px;
+    --radius-large: 30px;
+    --radius-medium: 18px;
+    --radius-small: 12px;
+    --radius-extrasmall: 6px;
+  }
+}

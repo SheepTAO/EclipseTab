@@ -225,9 +225,8 @@ export const FolderView: React.FC<FolderViewProps> = ({
   }
 
   // Positioning
-  // Logic from original FolderView: Center logic using estimated width.
-  // We can reuse `gridWidth` calculated above? Or standard max width.
-  const displayWidth = Math.min(items.length, COLUMNS) * 64 + (Math.max(Math.min(items.length, COLUMNS) - 1, 0) * 8) + 16;
+  // We use the same formula as the container width to ensure perfectly centered positioning.
+  const displayWidth = (Math.min(items.length, COLUMNS) * CELL_WIDTH - GAP) + 18; // 16px padding + 2px border
   const halfWidth = displayWidth / 2;
 
   // ============================================================================
@@ -242,7 +241,7 @@ export const FolderView: React.FC<FolderViewProps> = ({
   }), [anchorRect?.left, anchorRect?.width, anchorRect?.top, halfWidth]);
 
   const containerStyle = useMemo(() => ({
-    width: (Math.min(widthItemCount, COLUMNS) * CELL_WIDTH - GAP) + 16,
+    width: (Math.min(widthItemCount, COLUMNS) * CELL_WIDTH - GAP) + 18, // 16px padding + 2px border
     height: 'auto' as const,
     transition: `width ${SQUEEZE_ANIMATION_DURATION}ms ${EASE_SPRING}`,
     pointerEvents: (dragState.isAnimatingReturn ? 'none' : 'auto') as React.CSSProperties['pointerEvents'],

@@ -20,6 +20,7 @@
     border-radius: 16px;
     padding: 4px;
     display: flex;
+    flex-direction: column;
     gap: 4px;
 }
 
@@ -33,4 +34,14 @@
     max-height: 80vh;
     overflow-y: auto;
     box-sizing: border-box;
+}
+
+/* @supports: superellipse(1.5) 浏览器使用放大圆角 */
+@supports (corner-shape: superellipse(1.5)) {
+  .modal {
+    border-radius: 24px;
+  }
+  .innerContainer {
+    border-radius: 18px;
+  }
 }

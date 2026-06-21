@@ -3,6 +3,7 @@ import { PopoverPanel } from '@/shared/components/PopoverPanel/PopoverPanel';
 import { useLanguage } from '@/shared/context/LanguageContext';
 import { testConnection, uploadToCloud, fullSyncFromCloud, isAutoSyncEnabled, setAutoSyncEnabled } from '../../services/syncManager';
 import { getLastSyncTimeLabel } from '../../services/syncData';
+import { exportFullBackup, importFullBackup } from '@/shared/utils/backup';
 import styles from './SyncModal.module.css';
 
 interface SyncModalProps {
@@ -25,6 +26,8 @@ export const SyncModal: React.FC<SyncModalProps> = ({ isOpen, onClose, anchorPos
     const [syncWallpaper, setSyncWallpaper] = useState(() => localStorage.getItem('EclipseTab_syncWallpaper') === 'true');
     const [syncStickers, setSyncStickers] = useState(() => localStorage.getItem('EclipseTab_syncStickers') === 'true');
     const [autoSync, setAutoSync] = useState(() => isAutoSyncEnabled());
+    const [isBackupBusy, setIsBackupBusy] = useState(false);
+    const backupInputRef = React.useRef<HTMLInputElement>(null);
 
     const lastSyncLabel = getLastSyncTimeLabel();
 
@@ -80,12 +83,65 @@ export const SyncModal: React.FC<SyncModalProps> = ({ isOpen, onClose, anchorPos
         setIsDownloading(false);
     }, [isDownloading]);
 
+    const handleExportBackup = async () => {
+        if (isBackupBusy) return;
+        setIsBackupBusy(true);
+        try {
+            await exportFullBackup();
+        } catch (error) {
+            console.error('Backup failed:', error);
+            window.alert(t.settings.backupFailed);
+        } finally {
+            setIsBackupBusy(false);
+        }
+    };
+
+    const handleImportBackup = async (event: React.ChangeEvent<HTMLInputElement>) => {
+        const file = event.target.files?.[0];
+        event.target.value = '';
+        if (!file) return;
+        if (!window.confirm(t.settings.importBackupConfirm)) return;
+
+        setIsBackupBusy(true);
+        try {
+            await importFullBackup(file);
+            window.location.reload();
+        } catch (error) {
+            console.error('Restore failed:', error);
+            window.alert(t.settings.restoreFailed);
+        } finally {
+            setIsBackupBusy(false);
+        }
+    };
+
     return (
         <PopoverPanel
             isOpen={isOpen}
             onClose={onClose}
             anchorPosition={anchorPosition}
             width={264}
+            sideContent={
+                <div className={styles.cardSection} style={{ flex: 1, margin: 0, justifyContent: 'center' }}>
+                    <div className={styles.sectionHeader}>
+                        <span className={styles.sectionTitle}>{t.sync.localBackup}</span>
+                    </div>
+                    <div className={styles.buttonRow}>
+                        <button className={`${styles.btnBase} ${styles.btnFull}`} onClick={handleExportBackup} disabled={isBackupBusy}>
+                            {isBackupBusy ? '...' : t.settings.exportBackup}
+                        </button>
+                        <button className={`${styles.btnBase} ${styles.btnFull}`} onClick={() => backupInputRef.current?.click()} disabled={isBackupBusy}>
+                            {t.settings.importBackup}
+                        </button>
+                    </div>
+                    <input
+                        ref={backupInputRef}
+                        type="file"
+                        accept=".zip,application/zip"
+                        onChange={handleImportBackup}
+                        style={{ display: 'none' }}
+                    />
+                </div>
+            }
         >
             {/* 头部 */}
             <div className={styles.headerSection}>
@@ -219,6 +275,7 @@ export const SyncModal: React.FC<SyncModalProps> = ({ isOpen, onClose, anchorPos
                     </button>
                 </div>
             </div>
+
         </PopoverPanel>
     );
 };
